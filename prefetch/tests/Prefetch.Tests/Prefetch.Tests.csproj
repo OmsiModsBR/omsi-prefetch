@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Tests of the prefetch module's session program and package: unit gates on
+       a synthetic OMSI installation, and the real program run through
+       OmsiLaunch's session program launcher with a fake OMSI client. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Prefetch.Tests</AssemblyName>
+    <RootNamespace>OmsiLaunch.Modules.Prefetch.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\preloader\Prefetch.Preloader.csproj" />
+    <ProjectReference Include="$(OmsiLaunchRoot)src\OmsiLaunch.Process\OmsiLaunch.Process.csproj" />
+    <ProjectReference Include="$(OmsiLaunchRoot)src\OmsiLaunch.Runtime.Modules\OmsiLaunch.Runtime.Modules.csproj" />
+  </ItemGroup>
+</Project>

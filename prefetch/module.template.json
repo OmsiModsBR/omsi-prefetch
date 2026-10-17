@@ -1,0 +1,36 @@
+{
+  "schema": "omsilaunch.runtime-module/v1",
+  "id": "omsi-prefetch",
+  "version": "1.0.0-beta.1",
+  "name": "OMSI Prefetch",
+  "bridge_protocol": { "min": 2, "max": 2 },
+  "activation": "default",
+  "required_capabilities": ["bridge.events", "bridge.hooks.iat"],
+  "components": [
+    { "kind": "managed", "path": "Prefetch.Module.dll", "sha256": "", "entry": "OmsiLaunch.Modules.Prefetch.PrefetchModule" },
+    { "kind": "native", "path": "prefetch-native.dll", "sha256": "" },
+    { "kind": "host", "path": "Prefetch.Preloader.exe", "sha256": "" }
+  ],
+  "settings": [
+    { "key": "ram_budget_mb", "type": "integer", "default": "auto", "auto": true, "min": 256, "max": 12288, "flag": "prefetch-ram", "description": "Memory the preloader may hold, in MB. auto: 70% of the memory free at the start, after keeping 4 GB for OMSI, at most 12 GB." },
+    { "key": "monitor", "type": "boolean", "default": false, "flag": "prefetch-monitor", "description": "Shows the preloader's monitor window." },
+    { "key": "read_ahead", "type": "boolean", "default": true, "description": "Serves OMSI's byte-by-byte reads from 64 KiB blocks." },
+    { "key": "write_behind", "type": "boolean", "default": true, "description": "Collects OMSI's byte-by-byte writes of the terrain cache (.rdy) in 256 KiB blocks." },
+    { "key": "read_only_open", "type": "boolean", "default": true, "description": "Opens assets below read_only_folders without write access." },
+    { "key": "read_only_folders", "type": "text", "default": "vehicles\\", "max_length": 512, "description": "Folders, relative to the OMSI folder and separated by ';', whose assets are opened read-only." },
+    { "key": "tile_radius", "type": "integer", "default": 12, "min": 0, "max": 64, "description": "How far around the start and the player tiles are held, in tiles." },
+    { "key": "ai_vehicles", "type": "choice", "default": "complete", "choices": ["off", "essential", "load", "complete"], "description": "What of the map's AI vehicles is held." },
+    { "key": "user_vehicles", "type": "choice", "default": "none", "choices": ["none", "list", "all"], "description": "Which of the user's vehicles are held." },
+    { "key": "user_vehicle_list", "type": "text", "default": "", "max_length": 4096, "description": "Vehicle folders held with user_vehicles=list, separated by ';', in order." },
+    { "key": "user_vehicle_scope", "type": "choice", "default": "essential", "choices": ["essential", "load", "complete"], "description": "What of each user vehicle is held." },
+    { "key": "fleet_scope", "type": "choice", "default": "load", "choices": ["essential", "load", "complete"], "description": "What of each user vehicle carrying the map's timetable (.hof) is held." },
+    { "key": "sounds", "type": "boolean", "default": true, "description": "Includes the sound files vehicles and objects cite." },
+    { "key": "pre_open", "type": "choice", "default": "learned", "choices": ["none", "learned", "all"], "description": "Vehicle files opened ahead of the game without being held." },
+    { "key": "pre_open_on_first_use", "type": "boolean", "default": true, "description": "When a vehicle's preview starts, opens its folder ahead of the game." },
+    { "key": "learn", "type": "boolean", "default": true, "description": "Remembers what each session of a map used, to bring it in before the next one." },
+    { "key": "survey", "type": "boolean", "default": true, "description": "Reads the map's tiles to know what each one needs." }
+  ],
+  "conflicts": { "plugins": ["OmsiLoadingPoC.dll"] },
+  "failure_policy": "degrade",
+  "timeouts": { "prepare_ms": 600000, "host_stop_ms": 20000 }
+}

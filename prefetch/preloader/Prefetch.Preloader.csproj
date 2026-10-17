@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The prefetch module's session program (x64, outside OMSI's address space):
+       OmsiLaunch starts it before OMSI, it holds the files the session will read
+       in RAM, reports ready, then follows the session through the native
+       component's use reports. Published as one framework-dependent file. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Prefetch.Preloader</AssemblyName>
+    <RootNamespace>OmsiLaunch.Modules.Prefetch</RootNamespace>
+    <Version>1.0.0</Version>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup><InternalsVisibleTo Include="Prefetch.Tests" /></ItemGroup>
+</Project>
