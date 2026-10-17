@@ -66,7 +66,6 @@ Builds the three components, publishes the preloader as one framework-dependent 
 
 ## Open points
 
-- Runtime validation: pending the RMG Leste round (`D:\OMSI-TESTES2`, when it is free).
 - OMSI's presented entrypoint order is not known offline: the start tiles of the file order and of the name order are both used.
 - A file still open through a read-only handle reopened for writing when the module stops is handed back to the game's read-only handle; a later write to it would be refused (needs a write to a vehicle asset that is open at that very moment).
 - As in the study that measured it, terminating OMSI while it writes a `.rdy` loses the bytes still buffered (the file is a regenerable cache).
