@@ -53,7 +53,7 @@ internal sealed class SessionContext
         element.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 }
 
-internal enum PreOpenMode { None, Learned, All }
+internal enum PreOpenMode { None, Learned, All, List }
 
 // The module's settings (module.json declares them; OmsiLaunch validated and
 // normalized every value before the session started).
@@ -75,6 +75,23 @@ internal sealed class PreloadSettings
     public bool PreOpenOnFirstUse { get; private init; } = true;
     public bool Learn { get; private init; } = true;
     public bool Survey { get; private init; } = true;
+    // Memory kept for OMSI when the budget is automatic (ini: MinFreePhysicalMB).
+    public long ReserveMb { get; private init; } = ReservedForOmsiMb;
+    // Loading stops below this much free memory; null = automatic (2 GB, or 1 GB with an explicit budget). Ini: StopPrefetchBelowFreeMB.
+    public long? StopBelowFreeMb { get; private init; }
+    // Cap, in MB, of what each vehicle tier (the map's AI, the user's vehicles) may hold; 0 = only the budget. Ini: OrcamentoMB.
+    public long VehicleBudgetMb { get; private init; }
+    public VehicleScope PreOpenScope { get; private init; } = VehicleScope.Load;
+    public IReadOnlyList<string> PreOpenList { get; private init; } = Array.Empty<string>();
+    public long PreOpenMaxMb { get; private init; } = 2048;
+    public int PreOpenThreads { get; private init; } = 2;
+    public long PreOpenFirstUseMaxMb { get; private init; } = 400;
+    public int PreOpenFirstUseThreads { get; private init; } = 4;
+    // Bounded disk use: the normal log is a few dozen lines per session; per-file detail only with debug_log; the whole data directory stays under DataLimitMb.
+    public bool DebugLog { get; private init; }
+    // The small window shown while a map is prepared for the first time (it explains the wait before OMSI opens).
+    public bool FirstOpenNotice { get; private init; } = true;
+    public long DataLimitMb { get; private init; } = 256;
 
     public static PreloadSettings From(IReadOnlyDictionary<string, string> values)
     {
@@ -83,6 +100,7 @@ internal sealed class PreloadSettings
         VehicleScope Scope(string value, VehicleScope fallback) => value switch { "essential" => VehicleScope.Essential, "load" => VehicleScope.Load, "complete" => VehicleScope.Complete, _ => fallback };
         var budget = Get("ram_budget_mb", "auto");
         var ai = Get("ai_vehicles", "complete");
+        long Number(string key, long fallback, long min, long max) => long.TryParse(Get(key, fallback.ToString(CultureInfo.InvariantCulture)), NumberStyles.None, CultureInfo.InvariantCulture, out var value) ? Math.Clamp(value, min, max) : fallback;
         return new PreloadSettings
         {
             RamBudgetMb = long.TryParse(budget, NumberStyles.None, CultureInfo.InvariantCulture, out var mb) ? mb : null,
@@ -94,17 +112,32 @@ internal sealed class PreloadSettings
             UserScope = Scope(Get("user_vehicle_scope", "essential"), VehicleScope.Essential),
             FleetScope = Scope(Get("fleet_scope", "load"), VehicleScope.Load),
             Sounds = Flag("sounds", true),
-            PreOpen = Get("pre_open", "learned") switch { "none" => PreOpenMode.None, "all" => PreOpenMode.All, _ => PreOpenMode.Learned },
+            PreOpen = Get("pre_open", "learned") switch { "none" => PreOpenMode.None, "all" => PreOpenMode.All, "list" => PreOpenMode.List, _ => PreOpenMode.Learned },
+            PreOpenScope = Scope(Get("pre_open_scope", "load"), VehicleScope.Load),
+            PreOpenList = Get("pre_open_list", "").Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+            PreOpenMaxMb = Number("pre_open_max_mb", 2048, 16, 65536),
+            PreOpenThreads = (int)Number("pre_open_threads", 2, 1, 16),
+            PreOpenFirstUseMaxMb = Number("pre_open_first_use_max_mb", 400, 16, 65536),
+            PreOpenFirstUseThreads = (int)Number("pre_open_first_use_threads", 4, 1, 16),
+            ReserveMb = Number("reserve_mb", ReservedForOmsiMb, 0, 65536),
+            StopBelowFreeMb = long.TryParse(Get("stop_below_free_mb", "auto"), NumberStyles.None, CultureInfo.InvariantCulture, out var stop) ? Math.Clamp(stop, 256, 65536) : null,
+            VehicleBudgetMb = Number("vehicle_budget_mb", 0, 0, 65536),
+            DebugLog = Flag("debug_log", false),
+            FirstOpenNotice = Flag("first_open_notice", true),
+            DataLimitMb = Number("data_limit_mb", 256, 16, 4096),
             PreOpenOnFirstUse = Flag("pre_open_on_first_use", true),
             Learn = Flag("learn", true),
             Survey = Flag("survey", true)
         };
     }
 
-    // auto: 70 % of the RAM free now, after keeping 4 GB for OMSI, at most 12 GB.
+    // The free-memory floor below which loading stops: the setting, or 2 GB with the automatic budget and 1 GB with an explicit one.
+    public long StopBelowMb => StopBelowFreeMb ?? (RamBudgetMb is null ? 2048 : 1024);
+
+    // auto: 70 % of the RAM free now, after keeping reserve_mb (4 GB) for OMSI, at most 12 GB.
     public long BudgetBytes(long availableMb)
     {
-        var mb = RamBudgetMb ?? (long)(0.7 * Math.Max(0, availableMb - ReservedForOmsiMb));
+        var mb = RamBudgetMb ?? (long)(0.7 * Math.Max(0, availableMb - ReserveMb));
         return Math.Clamp(mb, 0, MaxBudgetMb) << 20;
     }
 }

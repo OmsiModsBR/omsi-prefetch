@@ -24,6 +24,8 @@ internal static class Program
         Gate("map.global-cfg", MapGate);
         Gate("tiles.closure-and-index", TilesGate);
         Gate("vehicles.scopes", VehiclesGate);
+        Gate("settings.usage", UsageSettingsGate);
+        Gate("disk.log-and-data-bounded", DiskGate);
         Gate("holdings.hold-release", HoldingsGate);
         Gate("holdings.game-streamed-files-never-held", StreamedFilesGate);
         Gate("feed.release-is-never-queued", FeedReleaseGate);
@@ -228,6 +230,72 @@ internal static class Program
         Check(holdings.Hold(b, Tier.UserVehicles) == HoldResult.Held && holdings.ReleaseUnused(1) == 3000 && !Fixture.IsMapped(b), "released under memory pressure");
     }
 
+    // Every setting the proof of concept's ini had is a setting of the module, with its default and its bounds.
+    private static void UsageSettingsGate()
+    {
+        var defaults = PreloadSettings.From(new Dictionary<string, string>());
+        Check(defaults.ReserveMb == 4096 && defaults.StopBelowFreeMb is null && defaults.StopBelowMb == 2048 && defaults.VehicleBudgetMb == 0, "reserve, stop floor and vehicle cap defaults");
+        Check(defaults.PreOpenMaxMb == 2048 && defaults.PreOpenThreads == 2 && defaults.PreOpenFirstUseMaxMb == 400 && defaults.PreOpenFirstUseThreads == 4 && defaults.PreOpenScope == VehicleScope.Load, "pre-open defaults");
+        Check(!defaults.Monitor && !defaults.DebugLog && defaults.FirstOpenNotice && defaults.DataLimitMb == 256, "no monitor window and no debug log unless asked; the data limit");
+        var set = PreloadSettings.From(new Dictionary<string, string>
+        {
+            ["ram_budget_mb"] = "6000", ["reserve_mb"] = "2000", ["stop_below_free_mb"] = "1500", ["vehicle_budget_mb"] = "900", ["pre_open"] = "list", ["pre_open_list"] = "Bus1; Bus2",
+            ["pre_open_scope"] = "complete", ["pre_open_max_mb"] = "100", ["pre_open_threads"] = "99", ["pre_open_first_use_threads"] = "0", ["monitor"] = "true", ["debug_log"] = "true", ["data_limit_mb"] = "99999"
+        });
+        Check(set.RamBudgetMb == 6000 && set.StopBelowMb == 1500 && set.VehicleBudgetMb == 900 && set.PreOpen == PreOpenMode.List && set.PreOpenList.SequenceEqual(new[] { "Bus1", "Bus2" }) && set.PreOpenScope == VehicleScope.Complete, "values are read");
+        Check(set.PreOpenThreads == 16 && set.PreOpenFirstUseThreads == 1 && set.DataLimitMb == 4096 && set.Monitor && set.DebugLog, "values are clamped to their bounds");
+        // The automatic budget keeps reserve_mb for OMSI (70 % of the rest), explicit ones are taken as given; the floor follows the budget kind.
+        Check(defaults.BudgetBytes(12_000) == (long)(0.7 * (12_000 - 4096)) << 20 && PreloadSettings.From(new Dictionary<string, string> { ["reserve_mb"] = "1000" }).BudgetBytes(12_000) == (long)(0.7 * 11_000) << 20, "the automatic budget follows reserve_mb");
+        Check(PreloadSettings.From(new Dictionary<string, string> { ["ram_budget_mb"] = "100" }).StopBelowMb == 1024, "an explicit budget stops loading at 1 GB free");
+    }
+
+    // A session of use does not fill the user's disk: the log is bounded, per-file detail needs debug_log, the data stays under its limit.
+    private static void DiskGate()
+    {
+        using var fixture = new Fixture();
+        var logs = fixture.Path("logs");
+        // Quiet by default: Verbose writes nothing, Write is capped at Log.MaxFileBytes with one marker.
+        for (var run = 0; run < 5; run++)
+        {
+            Log.Debug = false;
+            Log.Open(logs);
+            Log.Verbose("per-file line that must not be written");
+            for (var index = 0; index < 40_000; index++) Log.Write("line " + index + " " + new string('x', 80));
+            var bytes = Log.WrittenBytes;
+            Log.Close();
+            Check(bytes <= Log.MaxFileBytes, "a log file never passes its limit (" + bytes + ")");
+            Thread.Sleep(1100);
+        }
+        var files = new DirectoryInfo(logs).GetFiles("preloader-*.log");
+        Check(files.Length == Log.KeptFiles, "only " + Log.KeptFiles + " logs are kept (" + files.Length + ")");
+        Check(files.All(f => f.Length <= Log.MaxFileBytes + 256), "every kept log is bounded");
+        var text = File.ReadAllText(files.OrderByDescending(f => f.Name).First().FullName);
+        Check(!text.Contains("per-file line") && text.Contains("log limit reached"), "verbose lines are not written, the limit is marked once");
+        Log.Debug = true;
+        Log.Open(logs);
+        Log.Verbose("debug line");
+        var debugPath = Log.Path!;
+        Log.Close();
+        Log.Debug = false;
+        Check(File.ReadAllText(debugPath).Contains("debug line"), "debug_log writes the per-file lines");
+        // The data directory: the maps used least recently go first, the current one never.
+        var data = fixture.Path("data");
+        DateTime ago(int days) => DateTime.UtcNow.AddDays(-days);
+        foreach (var (name, days) in new[] { ("old-aaaa", 30), ("mid-bbbb", 10), ("recent-cccc", 1), ("current-dddd", 60) })
+        {
+            var folder = Path.Combine(data, "maps", name);
+            Directory.CreateDirectory(folder);
+            File.WriteAllBytes(Path.Combine(folder, "learned.txt"), new byte[1 << 20]);
+            File.SetLastWriteTimeUtc(Path.Combine(folder, "learned.txt"), ago(days));
+        }
+        var current = Path.Combine(data, "maps", "current-dddd");
+        Check(MapStore.Prune(data, 10L << 20, current) == 0, "under the limit nothing is removed");
+        var removed = MapStore.Prune(data, 2L << 20, current);
+        Check(removed == 2L << 20 && !Directory.Exists(Path.Combine(data, "maps", "old-aaaa")) && !Directory.Exists(Path.Combine(data, "maps", "mid-bbbb")), "the least recently used maps are removed first: " + removed);
+        Check(Directory.Exists(current) && Directory.Exists(Path.Combine(data, "maps", "recent-cccc")), "the current map and the most recent one stay");
+        Check(MapStore.Prune(data, 0, current) == 1L << 20 && Directory.Exists(current), "even at a zero limit the current map is kept");
+    }
+
     // The dump of 2026-10-12: tile_X_Y.map.prt and tile_X_Y.map.LM.bmp are rewritten while the game loads tiles.
     private static void StreamedFilesGate()
     {
@@ -301,7 +369,7 @@ internal static class Program
         var manifest = module.Manifest!;
         Check(manifest.Id == "omsi-prefetch" && manifest.Activation == ModuleActivation.Default && manifest.BridgeProtocolMin == 2 && manifest.BridgeProtocolMax == 2, "identity and activation");
         Check(manifest.HostComponent?.Path == "Prefetch.Preloader.exe" && manifest.Components.Any(c => c.Kind == ModuleComponentKind.Native), "components");
-        Check(manifest.EffectiveSettings.Count == 17 && manifest.EffectiveSettings.Single(s => s.Key == "ram_budget_mb").Flag == "prefetch-ram", "settings");
+        Check(manifest.EffectiveSettings.Count == 29 && manifest.EffectiveSettings.Single(s => s.Key == "ram_budget_mb").Flag == "prefetch-ram" && manifest.EffectiveSettings.Single(s => s.Key == "monitor").Flag == "prefetch-monitor" && !manifest.EffectiveSettings.Single(s => s.Key == "monitor").Default.Equals("true") && manifest.EffectiveSettings.Single(s => s.Key == "debug_log").Default == "false", "settings: every ini setting is reachable, the monitor and the debug log are off by default");
         Check(manifest.EffectiveConflictingPlugins.SequenceEqual(new[] { "OmsiLoadingPoC.dll" }), "conflicts");
         var files = Directory.GetFiles(package).Select(Path.GetFileName).OrderBy(x => x, StringComparer.Ordinal).ToArray();
         Check(files.SequenceEqual(new[] { "GPL-3.0.txt", "LGPL-3.0.txt", "Prefetch.Module.dll", "Prefetch.Preloader.exe", "NOTICE.txt", "prefetch-native.dll", "module.json" }.OrderBy(x => x, StringComparer.Ordinal)), "exactly the module's files: " + string.Join(", ", files));

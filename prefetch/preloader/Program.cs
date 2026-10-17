@@ -28,6 +28,7 @@ internal static class Program
         catch (Exception exception) when (exception is IOException or InvalidDataException or System.Text.Json.JsonException) { return 2; }
         if (!Guid.TryParse(context.SessionId, out var contextSession) || contextSession != sessionId) return 2;
 
+        Log.Debug = PreloadSettings.From(context.Settings).DebugLog;
         Log.Open(Path.Combine(context.DataDirectory, "logs"));
         var controller = new Controller(Console.OpenStandardOutput());
         controller.Listen(input);

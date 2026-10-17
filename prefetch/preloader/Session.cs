@@ -76,7 +76,7 @@ internal sealed class Session
         var budget = settings.BudgetBytes(availableMb);
         // An explicit budget is the user's choice: loading then stops only when
         // less than 1 GB is free (2 GB with the automatic budget).
-        Holdings = new Holdings(files, budget, context.SessionFiles) { StopBelowMb = settings.RamBudgetMb is null ? 2048 : 1024 };
+        Holdings = new Holdings(files, budget, context.SessionFiles) { StopBelowMb = settings.StopBelowMb };
         Log.Write("session " + context.SessionId + ", module " + context.ModuleVersion + ", OmsiLaunch " + context.ProductVersion);
         Log.Write("budget " + Vehicles.Mb(budget) + " (setting " + (settings.RamBudgetMb?.ToString(CultureInfo.InvariantCulture) ?? "auto") + "), free " + availableMb + " MB of " + (memory.TotalPhys >> 20) + " MB");
         if (budget > 0 && !Native.KeepResident(budget)) Log.Write("the working set minimum was not raised: held pages may be trimmed under memory pressure");
@@ -95,6 +95,8 @@ internal sealed class Session
         map = MapModel.Read(files, context.Map);
         if (map is null) { Log.Write("the map " + context.Map + " cannot be read: nothing to prepare"); return; }
         store = new MapStore(context.DataDirectory, files, map.Identity);
+        var pruned = MapStore.Prune(context.DataDirectory, settings.DataLimitMb << 20, store.Directory);
+        if (pruned > 0) Log.Write("data: " + Vehicles.Mb(pruned) + " of the least recently used maps removed to stay under " + settings.DataLimitMb + " MB");
         Holdings.AddWritten(store.ReadList(store.WrittenPath));
         learned = store.ReadList(store.LearnedPath);
         Tiles = new TileIndex(map, resolver, map.Fingerprint());
@@ -104,7 +106,7 @@ internal sealed class Session
         startTiles = map.StartTiles(context.WorldMode == "NewMap" ? context.EntrypointIndex : null);
         Log.Write("map " + map.Identity + " (" + map.Name + "): " + map.Tiles.Count + " tiles, " + map.Entrypoints.Count + " entrypoints; learned " + learned.Count + " files; tile index " +
             (Tiles.Loaded ? Tiles.Computed + " tiles from an earlier session" : "new") + "; start " + string.Join(" ", startTiles.Select(t => t.X + "," + t.Y)) + (FirstOpen ? "; first open" : ""));
-        if (FirstOpen) ui.ShowFirstOpen(map.Name, () => Holdings.HeldBytes);
+        if (FirstOpen && settings.FirstOpenNotice) ui.ShowFirstOpen(map.Name, () => Holdings.HeldBytes);
         if (budget == 0) { Log.Write("no memory to hold anything: preparation skipped"); return; }
 
         Phase = "prepare";
@@ -171,7 +173,8 @@ internal sealed class Session
     {
         var need = vehicle.Files.Where(f => !Holdings.IsHeld(f) && !Holdings.IsDenied(f)).Sum(files.Size);
         if (need == 0) return;
-        if (Holdings.HeldBytes + need > Holdings.BudgetBytes) { Log.Write("vehicles: over the budget: " + vehicle.Folder + " needs " + Vehicles.Mb(need)); return; }
+        if (Holdings.HeldBytes + need > Holdings.BudgetBytes) { Log.Verbose("vehicles: over the budget: " + vehicle.Folder + " needs " + Vehicles.Mb(need)); return; }
+        if (settings.VehicleBudgetMb > 0 && Holdings.TierBytes(tier) + need > settings.VehicleBudgetMb << 20) { Log.Verbose("vehicles: over the vehicle budget: " + vehicle.Folder + " needs " + Vehicles.Mb(need)); return; }
         long held = 0;
         foreach (var file in vehicle.Files)
         {
@@ -180,7 +183,7 @@ internal sealed class Session
             if (result == HoldResult.Held) held += files.Size(file);
             else if (result == HoldResult.LowMemory) { Holdings.MemoryLow = true; break; }
         }
-        Log.Write("vehicles: held " + vehicle.Folder + " (" + vehicle.Scope.ToString().ToLowerInvariant() + "): " + Vehicles.Mb(held));
+        Log.Verbose("vehicles: held " + vehicle.Folder + " (" + vehicle.Scope.ToString().ToLowerInvariant() + "): " + Vehicles.Mb(held));
     }
 
     // ---------------------------------------------------------------- while OMSI runs
@@ -248,7 +251,7 @@ internal sealed class Session
                 break;
             case 'X':
                 // OMSI cannot replace or truncate the file while it is mapped.
-                if (Holdings.MarkWritten(full)) Log.Write("released at OMSI's request: " + files.Relative(full));
+                if (Holdings.MarkWritten(full)) Log.Verbose("released at OMSI's request: " + files.Relative(full));
                 break;
         }
     }
@@ -354,15 +357,20 @@ internal sealed class Session
         WaitWhilePredicting(TimeSpan.FromMinutes(1));
         var vehiclesDirectory = Path.Combine(files.Root, "Vehicles") + "\\";
         List<string> work;
-        if (settings.PreOpen == PreOpenMode.Learned)
+        if (settings.PreOpen == PreOpenMode.List)
+        {
+            var listed = Vehicles.User(files, resolver, map, aiVehicles.Select(v => v.Folder).ToArray(), false, settings.PreOpenList, settings.PreOpenScope, settings.PreOpenScope, Log.Write);
+            work = listed.SelectMany(v => v.Files).ToList();
+        }
+        else if (settings.PreOpen == PreOpenMode.Learned)
             work = learned.Concat(Holdings.UsedInOrder()).Where(f => f.StartsWith(vehiclesDirectory, StringComparison.OrdinalIgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         else
         {
             var aiFolders = aiVehicles.Select(v => v.Folder).ToArray();
-            work = Vehicles.User(files, resolver, map, aiFolders, true, Array.Empty<string>(), VehicleScope.Load, VehicleScope.Load, Log.Write).SelectMany(v => v.Files).ToList();
+            work = Vehicles.User(files, resolver, map, aiFolders, true, Array.Empty<string>(), settings.PreOpenScope, settings.PreOpenScope, Log.Write).SelectMany(v => v.Files).ToList();
         }
         work = work.Where(f => !Holdings.IsHeld(f) && !Holdings.IsDenied(f)).ToList();
-        var result = OpenAhead(work, 2, 2048L << 20);
+        var result = OpenAhead(work, settings.PreOpenThreads, settings.PreOpenMaxMb << 20);
         Log.Write("pre-open: " + work.Count + " files: " + result);
     }
 
@@ -384,9 +392,9 @@ internal sealed class Session
                 var held = all.Count(Holdings.IsHeld);
                 var work = all.Where(f => !Holdings.IsHeld(f) && !Holdings.IsDenied(f)).ToList();
                 if (work.Count == 0 || held * 10 >= all.Count * 9) return;
-                Log.Write("first use of " + top + ": " + work.Count + " files opened ahead: " + OpenAhead(work, 4, 400L << 20));
+                Log.Verbose("first use of " + top + ": " + work.Count + " files opened ahead: " + OpenAhead(work, settings.PreOpenFirstUseThreads, settings.PreOpenFirstUseMaxMb << 20));
             }
-            catch (Exception exception) { Log.Write("first use of " + top + ": " + exception.Message); }
+            catch (Exception exception) { Log.Verbose("first use of " + top + ": " + exception.Message); }
         }) { IsBackground = true, Name = "race", Priority = ThreadPriority.BelowNormal };
         thread.Start();
     }
@@ -448,7 +456,7 @@ internal sealed class Session
             {
                 Holdings.MemoryLow = true;
                 var freed = Holdings.ReleaseUnused((1536 - available) << 20);
-                Log.Write("guard: free memory " + available + " MB: released " + Vehicles.Mb(freed));
+                Log.Verbose("guard: free memory " + available + " MB: released " + Vehicles.Mb(freed));
             }
             else if (available > 2560 && Holdings.MemoryLow) { Holdings.MemoryLow = false; Log.Write("guard: free memory " + available + " MB: loading resumes"); }
         }

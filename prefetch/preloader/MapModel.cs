@@ -199,6 +199,36 @@ internal sealed class MapStore
         File.Move(temporary, path, overwrite: true);
     }
 
+    // Keeps the module's data directory under limitBytes: when the maps' data
+    // (learned lists, tile indexes) are larger, the maps used least recently go
+    // first, never the current one. Returns the bytes removed. The logs have
+    // their own bounds (Log.MaxFileBytes, Log.KeptFiles).
+    public static long Prune(string dataDirectory, long limitBytes, string keepDirectory)
+    {
+        var maps = Path.Combine(dataDirectory, "maps");
+        if (!System.IO.Directory.Exists(maps)) return 0;
+        var folders = new List<(string Path, long Bytes, DateTime Used)>();
+        try
+        {
+            foreach (var folder in System.IO.Directory.EnumerateDirectories(maps))
+            {
+                long bytes = 0; var used = DateTime.MinValue;
+                foreach (var file in new DirectoryInfo(folder).EnumerateFiles("*", SearchOption.AllDirectories)) { bytes += file.Length; if (file.LastWriteTimeUtc > used) used = file.LastWriteTimeUtc; }
+                folders.Add((folder, bytes, used));
+            }
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException) { return 0; }
+        var total = folders.Sum(x => x.Bytes);
+        long removed = 0;
+        foreach (var folder in folders.Where(x => !string.Equals(Path.GetFullPath(x.Path), Path.GetFullPath(keepDirectory), StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.Used))
+        {
+            if (total <= limitBytes) break;
+            try { System.IO.Directory.Delete(folder.Path, recursive: true); total -= folder.Bytes; removed += folder.Bytes; }
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException) { }
+        }
+        return removed;
+    }
+
     public void WriteLearned(IEnumerable<string> fullPaths) => WriteList(LearnedPath, LearnedHeader, fullPaths);
     public void WriteWritten(IEnumerable<string> fullPaths) => WriteList(WrittenPath, WrittenHeader, fullPaths);
 }

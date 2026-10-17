@@ -16,29 +16,51 @@ Before OMSI (in this order, until the budget, the 5-minute limit or low free mem
 
 During the session: tiles around the player (centroid of the tile files OMSI opened in the last minute), the user's vehicles (`user_vehicles`), vehicle files opened ahead of the game without being held (`pre_open`), a vehicle's folder opened in parallel when its preview starts (`pre_open_on_first_use`), and a memory guard (below 1 GB free it releases files the game did not use, least valuable first).
 
-First open of a map (nothing learned, no tile index): the preloader shows its own notice window ("Pré-carregamento sendo inicializado…") until OMSI is started; the tray of OmsiLaunch is not shown yet at that point.
+First open of a map (nothing learned, no tile index): unless `first_open_notice` is off, the preloader shows its own notice window ("Pré-carregamento sendo inicializado…") until OMSI is started; the tray of OmsiLaunch is not shown yet at that point.
 
 Holding: each file is mapped read-only and every page touched; the file handle is closed at once, so the game's own opens never meet a sharing conflict. Files the game writes are never held (written list, extension list, the session's transaction files). If OMSI tries to replace or truncate a held file (`ERROR_USER_MAPPED_FILE`), the native component asks for its release (X line) and retries for up to 1.5 s; the preloader releases it and never holds it again.
 
+## What OmsiLaunch tells the module
+
+- **The map.** The session program receives the session's map from OmsiLaunch (`world.map` of its context) for every way to start: a new map, the map's last state, or a saved situation (OmsiLaunch resolves the situation's map). Nothing is configured by an ini file, and the module has none.
+- **The settings.** Every setting below reaches the module through OmsiLaunch, by any of: the module's own flag (`/prefetch-ram:6144`), `/module-setting:omsi-prefetch.<key>=<value>`, `LaunchSpec.Modules.Settings`, a session profile preset, or `[omsi-prefetch]` in `<OMSI>\.omsilaunch\modules.ini`. OmsiLaunch validates them against the manifest and refuses a value outside its bounds.
+- **The monitor window** (what is held in memory) opens **only when OmsiLaunch asks for it**: `/prefetch-monitor`, `monitor=true` in the settings file, a preset or `/module-setting`. It is off by default.
+
 ## Settings (`module.json`)
 
-| Key | Default | Flag |
-| --- | --- | --- |
-| `ram_budget_mb` | `auto`: 70 % of the memory free at the start, after keeping 4 GB for OMSI, at most 12 GB | `/preload-ram:<MB>` |
-| `monitor` | `false` | `/preload-monitor` |
-| `read_ahead`, `write_behind`, `read_only_open` | `true` | |
-| `read_only_folders` | `vehicles\` | |
-| `tile_radius` | `12` | |
-| `ai_vehicles` | `complete` (`off`, `essential`, `load`, `complete`) | |
-| `user_vehicles` | `none` (`none`, `list`, `all`) | |
-| `user_vehicle_list` | empty | |
-| `user_vehicle_scope` / `fleet_scope` | `essential` / `load` | |
-| `sounds`, `pre_open_on_first_use`, `learn`, `survey` | `true` | |
-| `pre_open` | `learned` (`none`, `learned`, `all`) | |
+| Key | Default | Flag | Replaces (proof of concept ini) |
+| --- | --- | --- | --- |
+| `ram_budget_mb` | `auto`: 70 % of the memory free at the start, after keeping `reserve_mb`, at most 12 GB | `/prefetch-ram:<MB>` | `MaxWarmBytesMB` |
+| `reserve_mb` | `4096` | `/prefetch-reserve:<MB>` | `MinFreePhysicalMB` |
+| `stop_below_free_mb` | `auto`: 2048, or 1024 with an explicit budget | `/prefetch-stop-below:<MB>` | `StopPrefetchBelowFreeMB` |
+| `vehicle_budget_mb` | `0` (only the budget limits) | `/prefetch-vehicle-ram:<MB>` | `OrcamentoMB` |
+| `monitor` | `false` | `/prefetch-monitor` | (window) |
+| `read_ahead`, `write_behind`, `read_only_open` | `true` | | `ReadAhead`, `WriteBehind`, `ReadOnlyOpen` |
+| `read_only_folders` | `vehicles\` | | `ReadOnlyPrefixes` |
+| `tile_radius` | `12` | | |
+| `ai_vehicles` | `complete` (`off`, `essential`, `load`, `complete`) | | `IA`, `ModoIA` |
+| `user_vehicles`, `user_vehicle_list`, `user_vehicle_scope` | `none` (`none`, `list`, `all`), empty, `essential` | | `Usuario`, `Lista`, `ModoUsuario` |
+| `fleet_scope` | `load` | | `ModoFrota` |
+| `sounds` | `true` | | `Sons` |
+| `pre_open` | `learned` (`none`, `learned`, `all`, `list`) | `/prefetch-pre-open:<mode>` | `PreAbrir` |
+| `pre_open_scope`, `pre_open_list`, `pre_open_max_mb`, `pre_open_threads` | `load`, empty, `2048`, `2` | | `PreAbrirModo`, `PreAbrirLista`, `PreAbrirMaxMB`, `PreAbrirThreads` |
+| `pre_open_on_first_use`, `pre_open_first_use_max_mb`, `pre_open_first_use_threads` | `true`, `400`, `4` | | `PreAbrirAoAbrir`, `PreAbrirAoAbrirMaxMB`, `PreAbrirAoAbrirThreads` |
+| `learn`, `survey` | `true` | | the manifest and the tile index |
+| `first_open_notice` | `true` | | a small window on a map's first open, explaining the wait before OMSI opens |
+| `debug_log` | `false` | `/prefetch-debug` | `Verbose` |
+| `data_limit_mb` | `256` | | |
+
+Not carried over, on purpose: `Mode`, `Gate`, `HelperExe`, `ManifestPath` and `LogDir` (OmsiLaunch starts the module, checks the build and gives it its folders), `[Hooks]` (the module hooks only the file functions of `Omsi.exe`; no internal hooks, no `Present`, no sampler), `[Diagnostics]` and `[Profile]` (the proof of concept's profiling) and `ChunkMB` (files are mapped whole).
 
 Activation `default`: once installed, the module runs in every session; `/no-module:omsi-prefetch` (or `enabled=false` in `.omsilaunch\modules.ini`) switches it off. Failure policy `degrade`. Conflicts: `OmsiLoadingPoC.dll`.
 
-With an explicit budget, loading stops when less than 1 GB is free (2 GB with `auto`).
+## Disk use
+
+The module is made for use, not for debugging. Its footprint in `<OMSI>\.omsilaunch\module-data\omsi-prefetch\` is bounded:
+
+- the log is a few dozen lines per session, at most 1 MiB per file (one marker line, then the rest is dropped) and the three most recent files are kept; per-file and per-vehicle lines exist only with `debug_log`;
+- what each map taught the module (`learned.txt`, `written.txt`, `tiles.idx`) is a few MB per map, and the maps' data stays under `data_limit_mb` (256 MB): when it grows past it, the maps used least recently are removed first, never the current one;
+- it writes no CSV, no sample traces and no copies of OMSI's files.
 
 ## Data (`<OMSI>\.omsilaunch\module-data\omsi-prefetch\`)
 
@@ -47,7 +69,7 @@ With an explicit budget, loading stops when less than 1 GB is free (2 GB with `a
 | `maps\<folder>-<hash>\learned.txt` | Files the game used on the map, first-use order (installation-relative). |
 | `maps\<folder>-<hash>\written.txt` | Files the game wrote: never held. |
 | `maps\<folder>-<hash>\tiles.idx` | Tile index (files each tile needs), with the map's fingerprint (global.cfg and every tile file). |
-| `logs\preloader-*.log` | The ten most recent session logs. |
+| `logs\preloader-*.log` | The three most recent session logs (at most 1 MiB each). |
 
 `/clear-module-data:omsi-prefetch` deletes all of it.
 
