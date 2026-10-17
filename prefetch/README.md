@@ -1,8 +1,8 @@
 # OMSI Prefetch (module `omsi-prefetch`)
 
-Published versions © Leo Monteiro / Portal OmsiModsBR - https://github.com/OmsiModsBR, under the GNU General Public License, version 3. Not part of OmsiLaunch and not distributed with it. Port of the loading PoC (`OmsiLoadingPoC` v2 and its x64 helper) to an OmsiLaunch Runtime Module (bridge protocol 2).
+Published versions © Leo Monteiro / Portal OmsiModsBR - https://github.com/OmsiModsBR, under the GNU General Public License, version 3. Not part of OmsiLaunch and not distributed with it. Built from the mechanisms of the loading optimization study as an OmsiLaunch Runtime Module (bridge protocol 2).
 
-Measured with the PoC (thesis of 30/09/2026, sequence R2-A → R3-A, the only change being the plugin): loading until traffic was ready went from 190 s to 51 s, frozen time from 75.0 s to 17.9 s, and time spent inside `ReadFile` from 146.6 s to 0.8 s.
+Measured results (the study of 30/09/2026): see the table in the repository's main README.
 
 ## How it works
 
@@ -69,4 +69,4 @@ Builds the three components, publishes the preloader as one framework-dependent 
 - Runtime validation: pending the RMG Leste round (`D:\OMSI-TESTES2`, when it is free).
 - OMSI's presented entrypoint order is not known offline: the start tiles of the file order and of the name order are both used.
 - A file still open through a read-only handle reopened for writing when the module stops is handed back to the game's read-only handle; a later write to it would be refused (needs a write to a vehicle asset that is open at that very moment).
-- As with the PoC, terminating OMSI while it writes a `.rdy` loses the bytes still buffered (the file is a regenerable cache).
+- As in the study that measured it, terminating OMSI while it writes a `.rdy` loses the bytes still buffered (the file is a regenerable cache).
