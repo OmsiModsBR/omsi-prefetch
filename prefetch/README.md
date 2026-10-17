@@ -24,6 +24,19 @@ Holding: each file is mapped read-only and every page touched; the file handle i
 
 - **The map.** The session program receives the session's map from OmsiLaunch (`world.map` of its context) for every way to start: a new map, the map's last state, or a saved situation (OmsiLaunch resolves the situation's map). Nothing is configured by an ini file, and the module has none.
 - **The settings.** Every setting below reaches the module through OmsiLaunch, by any of: the module's own flag (`/prefetch-ram:6144`), `/module-setting:omsi-prefetch.<key>=<value>`, `LaunchSpec.Modules.Settings`, a session profile preset, or `[omsi-prefetch]` in `<OMSI>\.omsilaunch\modules.ini`. OmsiLaunch validates them against the manifest and refuses a value outside its bounds.
+  A predefined session (an OmsiLaunch session profile preset) can carry them, one set per map or per way of playing:
+
+  ```yaml
+  modules:
+    omsi-prefetch:
+      settings:
+        ram_budget_mb: 8192
+        user_vehicles: list
+        user_vehicle_list: "Bus1;Bus2"
+        monitor: false
+  ```
+
+  The command line cannot also set a key the preset sets (`OL_E_SESSION_PROFILE_OVERRIDE_CONFLICT`); `enabled: false` keeps the module out of that session.
 - **The monitor window** (what is held in memory) opens **only when OmsiLaunch asks for it**: `/prefetch-monitor`, `monitor=true` in the settings file, a preset or `/module-setting`. It is off by default.
 
 ## Settings (`module.json`)
