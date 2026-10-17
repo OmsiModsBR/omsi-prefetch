@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/logo-dark.svg">
+    <img src="assets/brand/logo-light.svg" alt="OmsiLaunch Omsi Prefetch" height="96">
+  </picture>
+</p>
+
 # omsi-prefetch
 OMSI Prefetch: an OmsiLaunch runtime module that prefetches maps and vehicles into memory and speeds up OMSI 2 loading. Module id `omsi-prefetch`.
 
