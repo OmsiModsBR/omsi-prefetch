@@ -29,6 +29,10 @@ The gain comes from the cost of tens of millions of tiny system calls (39.8 to 4
 
 Implemented, with its offline tests passing. Details, settings and the files the module reads and writes are in [prefetch/README.md](prefetch/README.md).
 
+## Documentation
+
+User documentation is in [docs/README.md](docs/README.md): [what it is](docs/getting-started/overview.md), [installation](docs/getting-started/installation.md), [first run](docs/getting-started/first-run.md), [how prefetching works](docs/concepts/how-it-works.md), [choosing settings by memory size](docs/guides/choosing-settings-by-memory.md), the [settings reference](docs/reference/settings.md) and the [changelog](CHANGELOG.md).
+
 ## Building
 
 The module builds against an OmsiLaunch checkout (bridge protocol 2 or later): `Directory.Build.props` points `OmsiLaunchRoot` at `..\OmsiLaunch-spec-pack\OmsiLaunch` (override with `-p:OmsiLaunchRoot=...`), which must be built first.

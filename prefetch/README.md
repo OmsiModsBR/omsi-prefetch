@@ -4,6 +4,10 @@ Published versions © Leo Monteiro / Portal OmsiModsBR - https://github.com/Omsi
 
 Measured results (the study of 30/09/2026): see the table in the repository's main README.
 
+## Documentation
+
+The complete user documentation is in [../docs/README.md](../docs/README.md): [overview](../docs/getting-started/overview.md), [installation](../docs/getting-started/installation.md), [concepts](../docs/concepts/how-it-works.md), [guides](../docs/guides/choosing-settings-by-memory.md), the [settings reference](../docs/reference/settings.md), [files and directories](../docs/reference/files-and-directories.md), [log format](../docs/reference/log-format.md), [known limitations](../docs/reference/known-limitations.md) and [test coverage](../docs/status/test-coverage.md).
+
 ## How it works
 
 | Part | Where it runs | What it does |
