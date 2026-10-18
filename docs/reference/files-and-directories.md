@@ -1,6 +1,6 @@
 # Files and directories
 
-This page lists everything OMSI Prefetch reads and writes: the module's own files, the files it reads from the OMSI installation, the data it keeps and its formats, the other resources it uses (a named pipe, memory, threads), and the bounds that apply to each. Everything is taken from the code of the session program (`prefetch\preloader\`) and the native component (`prefetch\native\`).
+This page lists everything Omsi Prefetch reads and writes: the module's own files, the files it reads from the OMSI installation, the data it keeps and its formats, the other resources it uses (a named pipe, memory, threads), and the bounds that apply to each. Everything is taken from the code of the session program (`prefetch\preloader\`) and the native component (`prefetch\native\`).
 
 Related pages: [safety](../concepts/safety.md), [learned data](../concepts/learned-data.md), [log format](log-format.md), [clearing data](../guides/clearing-data.md), [settings](settings.md#data).
 

@@ -1,6 +1,6 @@
 # Safety: what the module touches and what happens when something goes wrong
 
-OMSI Prefetch runs next to your simulator and reads a lot of its files, so this page states plainly what it reads, what it writes, what it never holds, how it avoids getting in OMSI's way, and what the outcome is when OMSI, OmsiLaunch or the module itself stops unexpectedly. Everything is taken from the code. The module is not a security product and OmsiLaunch does not vouch for modules; the boundary OmsiLaunch guarantees for any module is in the Runtime Modules reference ("Security boundary").
+Omsi Prefetch runs next to your simulator and reads a lot of its files, so this page states plainly what it reads, what it writes, what it never holds, how it avoids getting in OMSI's way, and what the outcome is when OMSI, OmsiLaunch or the module itself stops unexpectedly. Everything is taken from the code. The module is not a security product and OmsiLaunch does not vouch for modules; the boundary OmsiLaunch guarantees for any module is in the Runtime Modules reference ("Security boundary").
 
 Related pages: [how prefetching works](how-it-works.md), [native shim](native-shim.md), [memory and budget](memory-and-budget.md), [files and directories](../reference/files-and-directories.md), [errors and degradation](../reference/errors-and-degradation.md), [known limitations](../reference/known-limitations.md).
 

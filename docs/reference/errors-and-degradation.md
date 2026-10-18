@@ -1,6 +1,6 @@
 # Errors and degradation
 
-OMSI Prefetch is built to fail small: the failure policy in its manifest is `degrade`, and each of its parts keeps working when another one cannot. This page lists what can go wrong, which OmsiLaunch code or module message shows it, what the module does and what you can do. The codes are those of the OmsiLaunch error reference; this page says what they mean for this module.
+Omsi Prefetch is built to fail small: the failure policy in its manifest is `degrade`, and each of its parts keeps working when another one cannot. This page lists what can go wrong, which OmsiLaunch code or module message shows it, what the module does and what you can do. The codes are those of the OmsiLaunch error reference; this page says what they mean for this module.
 
 Related pages: [events](events-and-notices.md), [log format](log-format.md), [safety](../concepts/safety.md#what-happens-when-something-goes-wrong), [diagnosing slowness](../guides/diagnosing-slowness.md), [coexisting](../guides/coexisting.md), [installation](../getting-started/installation.md).
 

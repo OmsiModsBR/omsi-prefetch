@@ -1,6 +1,6 @@
 # Per-session overrides on the command line
 
-You can change any setting of OMSI Prefetch for one session without touching `modules.ini` or a profile. This page lists the module's own flags, the generic `/module-setting` form that reaches every setting, how values are written and quoted, the precedence rules, how to check the result with `/plan`, and the errors you can meet. Settings themselves are described in the [settings reference](../reference/settings.md).
+You can change any setting of Omsi Prefetch for one session without touching `modules.ini` or a profile. This page lists the module's own flags, the generic `/module-setting` form that reaches every setting, how values are written and quoted, the precedence rules, how to check the result with `/plan`, and the errors you can meet. Settings themselves are described in the [settings reference](../reference/settings.md).
 
 Related pages: [settings reference](../reference/settings.md), [session profiles](session-profiles.md), [turning it off](turning-off.md), [choosing settings by memory size](choosing-settings-by-memory.md).
 

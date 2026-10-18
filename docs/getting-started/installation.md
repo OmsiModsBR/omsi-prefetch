@@ -1,6 +1,6 @@
 # Installation
 
-This page lists what OMSI Prefetch `1.0.0-beta.1` requires, how the module folder is installed into an OmsiLaunch installation, how to confirm that OmsiLaunch sees the module and will load it, and how to remove or upgrade it. It assumes OmsiLaunch is already installed in the OMSI root as described in the OmsiLaunch installation page. The module is a runtime module in the sense of the OmsiLaunch Runtime Modules reference; the rules there (location, integrity, activation) are the rules of this page.
+This page lists what Omsi Prefetch `1.0.0-beta.1` requires, how the module folder is installed into an OmsiLaunch installation, how to confirm that OmsiLaunch sees the module and will load it, and how to remove or upgrade it. It assumes OmsiLaunch is already installed in the OMSI root as described in the OmsiLaunch installation page. The module is a runtime module in the sense of the OmsiLaunch Runtime Modules reference; the rules there (location, integrity, activation) are the rules of this page.
 
 Related pages: [overview](overview.md), [first run](first-run.md), [turning it off](../guides/turning-off.md), [compatibility](../reference/compatibility.md), [errors and degradation](../reference/errors-and-degradation.md), [files and directories](../reference/files-and-directories.md).
 

@@ -1,6 +1,6 @@
 # First run
 
-This page walks through the first session of a map with OMSI Prefetch installed: what the module does before OMSI opens, what the first-open window means, what changes on the second run, and where to look afterwards. It assumes the module is installed and visible to OmsiLaunch as described in [installation](installation.md). You start sessions exactly as before (the module needs no flag); nothing on this page changes the command line.
+This page walks through the first session of a map with Omsi Prefetch installed: what the module does before OMSI opens, what the first-open window means, what changes on the second run, and where to look afterwards. It assumes the module is installed and visible to OmsiLaunch as described in [installation](installation.md). You start sessions exactly as before (the module needs no flag); nothing on this page changes the command line.
 
 Related pages: [installation](installation.md), [measuring the gain](measuring-the-gain.md), [how prefetching works](../concepts/how-it-works.md), [session program](../concepts/session-program.md), [learned data](../concepts/learned-data.md), [log format](../reference/log-format.md).
 
@@ -29,7 +29,7 @@ The first time a map is requested the module knows nothing about it: no list of 
 
 | Element | Meaning |
 | --- | --- |
-| Title bar `OMSI Prefetch`; heading `Preloading is being set up` | The module is preparing this map. |
+| Title bar `Omsi Prefetch`; heading `Preloading is being set up` | The module is preparing this map. |
 | Text: the map was requested for the first time; the module is reading the map and bringing as much as it can into memory before OMSI opens; in this first session it also learns what the game uses; the next starts will be faster | This is a first open. Nothing is wrong when the wait is longer than usual. |
 | The map name | The friendly name from the map's `global.cfg` (the folder name when the map has none). |
 | `Preparing: <size> in memory` and a moving bar | How much the module holds right now. It updates twice a second. |

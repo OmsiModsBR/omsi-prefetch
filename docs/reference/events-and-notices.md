@@ -1,6 +1,6 @@
 # Events and notices
 
-OMSI Prefetch reports its progress to OmsiLaunch as runtime events named `module.omsi-prefetch.<name>`. This page lists every event the module emits (and the ones OmsiLaunch emits about its session program), with the keys of their data and when they appear, and says what the module does not emit (notices, operations). Events are read while the session runs with `OmsiLaunch.exe events read` or `events watch` and through `session status`; all values are strings.
+Omsi Prefetch reports its progress to OmsiLaunch as runtime events named `module.omsi-prefetch.<name>`. This page lists every event the module emits (and the ones OmsiLaunch emits about its session program), with the keys of their data and when they appear, and says what the module does not emit (notices, operations). Events are read while the session runs with `OmsiLaunch.exe events read` or `events watch` and through `session status`; all values are strings.
 
 Related pages: [log format](log-format.md), [errors and degradation](errors-and-degradation.md), [measuring the gain](../getting-started/measuring-the-gain.md), [session program](../concepts/session-program.md), [native shim](../concepts/native-shim.md).
 

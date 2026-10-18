@@ -1,6 +1,6 @@
 # FAQ
 
-Short answers to the questions users ask most about OMSI Prefetch. Each answer points to the page that has the detail.
+Short answers to the questions users ask most about Omsi Prefetch. Each answer points to the page that has the detail.
 
 Related pages: [overview](../getting-started/overview.md), [known limitations](known-limitations.md), [diagnosing slowness](../guides/diagnosing-slowness.md), [settings](settings.md).
 

@@ -1,6 +1,6 @@
 # Vehicles and scopes: essential, load and complete
 
-A vehicle is many files: scripts, models, textures, sounds, repaints, timetables. Holding all of every vehicle you own would use more memory than most machines have, so OMSI Prefetch has three scopes that say how much of a vehicle is held, and separate settings for the vehicles the map itself uses (its AI) and the vehicles you drive. This page defines the scopes, shows how the module decides which vehicles to consider, and says when each set is held.
+A vehicle is many files: scripts, models, textures, sounds, repaints, timetables. Holding all of every vehicle you own would use more memory than most machines have, so Omsi Prefetch has three scopes that say how much of a vehicle is held, and separate settings for the vehicles the map itself uses (its AI) and the vehicles you drive. This page defines the scopes, shows how the module decides which vehicles to consider, and says when each set is held.
 
 Related pages: [how prefetching works](how-it-works.md), [memory and budget](memory-and-budget.md), [pre-open](pre-open.md), [settings reference](../reference/settings.md#vehicles), [choosing settings by memory size](../guides/choosing-settings-by-memory.md).
 

@@ -1,6 +1,8 @@
-# OMSI Prefetch Documentation
+# Omsi Prefetch Documentation
 
-This is the English documentation for OMSI Prefetch `1.0.0-beta.1` (module id `omsi-prefetch`), an OmsiLaunch runtime module that prefetches maps and vehicles into memory and speeds up the loading of OMSI 2. Every page describes what the current code does; when a page and the code disagree, the code wins and the page is a bug. The pages mirror the structure of the OmsiLaunch documentation: getting started, concepts, guides, reference and status.
+English | [Português (Brasil)](pt-BR/README.md)
+
+This is the English documentation for Omsi Prefetch `1.0.0-beta.1` (module id `omsi-prefetch`), an OmsiLaunch runtime module that prefetches maps and vehicles into memory and speeds up the loading of OMSI 2. Every page describes what the current code does; when a page and the code disagree, the code wins and the page is a bug. The pages mirror the structure of the OmsiLaunch documentation: getting started, concepts, guides, reference and status.
 
 The module is a runtime module of OmsiLaunch `0.1.0-beta4` or later. OmsiLaunch's own documentation (its Runtime Modules reference, CLI reference and session-profile reference) is the normative source for everything the module relies on from OmsiLaunch: where modules live, integrity, activation, flags, `modules.ini`, presets. These pages link to it by name and repeat only what a user of this module needs.
 
@@ -78,4 +80,4 @@ Vocabulary used throughout: the module is a beta (`1.0.0-beta.1`); the runtime-m
 
 ## License
 
-Copyright © 2026 Leo Monteiro / Portal OmsiModsBR. OMSI Prefetch is free software under the GNU General Public License, version 3; it uses OmsiLaunch, which is licensed under the GNU Lesser General Public License, version 3 only. See the repository `LICENSE` and `prefetch\NOTICE.txt`.
+Copyright © 2026 LMonteiro - github.com/lmonteirotech and OmsiModsBR Team - github.com/OmsiModsBR. Omsi Prefetch is free software under the GNU General Public License, version 3; it uses OmsiLaunch, which is licensed under the GNU Lesser General Public License, version 3 only. See the repository `LICENSE` and `prefetch\NOTICE.txt`.

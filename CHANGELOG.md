@@ -1,10 +1,10 @@
 # Changelog
 
-All notable changes to OMSI Prefetch (module id `omsi-prefetch`) are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html), with pre-release suffixes for betas.
+All notable changes to Omsi Prefetch (module id `omsi-prefetch`) are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html), with pre-release suffixes for betas.
 
 ## 1.0.0-beta.1 - unreleased
 
-First beta of OMSI Prefetch as an OmsiLaunch runtime module (bridge protocol 2, activation `default`, failure policy `degrade`). It packages the mechanisms of the loading optimization study of 30/09/2026 on the RMG Leste map. The comparison that isolates them (same optimized map package, plugin observing versus acting, file cache emptied before the run with the mechanisms on) measured 3.7x faster until traffic is loaded and until the game is usable, 4.2x less time frozen, 183x less time inside `ReadFile` and 5.9x less inside `WriteFile`; see [docs/getting-started/overview.md](docs/getting-started/overview.md) for the table and its scope (one machine, one map).
+First beta of Omsi Prefetch as an OmsiLaunch runtime module (bridge protocol 2, activation `default`, failure policy `degrade`). It packages the mechanisms of the loading optimization study of 30/09/2026 on the RMG Leste map. The comparison that isolates them (same optimized map package, plugin observing versus acting, file cache emptied before the run with the mechanisms on) measured 3.7x faster until traffic is loaded and until the game is usable, 4.2x less time frozen, 183x less time inside `ReadFile` and 5.9x less inside `WriteFile`; see [docs/getting-started/overview.md](docs/getting-started/overview.md) for the table and its scope (one machine, one map).
 
 ### Added
 

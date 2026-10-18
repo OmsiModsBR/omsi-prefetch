@@ -1,6 +1,6 @@
 # How prefetching works
 
-This page describes OMSI Prefetch end to end: the three components, the order of events from the start of a session to its end, what each component is responsible for, and how they talk to each other. The other concept pages go into each mechanism: the [session program](session-program.md), the [native shim](native-shim.md), the [learned data](learned-data.md), [memory and budget](memory-and-budget.md), [vehicle scopes](vehicle-scopes.md), [pre-open](pre-open.md) and [safety](safety.md). Everything here is taken from the module's source under `prefetch\`.
+This page describes Omsi Prefetch end to end: the three components, the order of events from the start of a session to its end, what each component is responsible for, and how they talk to each other. The other concept pages go into each mechanism: the [session program](session-program.md), the [native shim](native-shim.md), the [learned data](learned-data.md), [memory and budget](memory-and-budget.md), [vehicle scopes](vehicle-scopes.md), [pre-open](pre-open.md) and [safety](safety.md). Everything here is taken from the module's source under `prefetch\`.
 
 Related pages: [overview](../getting-started/overview.md), [first run](../getting-started/first-run.md), [settings reference](../reference/settings.md), [files and directories](../reference/files-and-directories.md).
 

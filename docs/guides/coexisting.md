@@ -1,6 +1,6 @@
 # Coexisting with other modules and plugins
 
-OMSI Prefetch hooks file functions of `Omsi.exe`, holds memory and reads many files. This page says what that means next to OMSI plugins, other OmsiLaunch modules, other programs and tools that touch your OMSI files, and how to resolve the one declared conflict. The rules of the hook registry, conflicts and activation are those of the OmsiLaunch Runtime Modules reference.
+Omsi Prefetch hooks file functions of `Omsi.exe`, holds memory and reads many files. This page says what that means next to OMSI plugins, other OmsiLaunch modules, other programs and tools that touch your OMSI files, and how to resolve the one declared conflict. The rules of the hook registry, conflicts and activation are those of the OmsiLaunch Runtime Modules reference.
 
 Related pages: [compatibility](../reference/compatibility.md), [errors and degradation](../reference/errors-and-degradation.md), [safety](../concepts/safety.md), [turning it off](turning-off.md).
 

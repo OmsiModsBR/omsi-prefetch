@@ -1,6 +1,6 @@
 # Compatibility
 
-This page states what OMSI Prefetch `1.0.0-beta.1` works with: OmsiLaunch versions, Windows, the .NET runtimes, OMSI 2 builds, maps and vehicles, other plugins and modules, and the languages of its windows. Sources: `prefetch\module.template.json`, the project files under `prefetch\`, and the native and session-program code.
+This page states what Omsi Prefetch `1.0.0-beta.1` works with: OmsiLaunch versions, Windows, the .NET runtimes, OMSI 2 builds, maps and vehicles, other plugins and modules, and the languages of its windows. Sources: `prefetch\module.template.json`, the project files under `prefetch\`, and the native and session-program code.
 
 Related pages: [installation](../getting-started/installation.md), [errors and degradation](errors-and-degradation.md), [coexisting](../guides/coexisting.md), [known limitations](known-limitations.md).
 

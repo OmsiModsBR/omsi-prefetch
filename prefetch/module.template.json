@@ -2,7 +2,7 @@
   "schema": "omsilaunch.runtime-module/v1",
   "id": "omsi-prefetch",
   "version": "1.0.0-beta.1",
-  "name": "OMSI Prefetch",
+  "name": "Omsi Prefetch",
   "bridge_protocol": { "min": 2, "max": 2 },
   "activation": "default",
   "required_capabilities": ["bridge.events", "bridge.hooks.iat"],

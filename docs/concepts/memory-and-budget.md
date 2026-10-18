@@ -1,6 +1,6 @@
 # Memory, the budget and the floors
 
-This page explains what "held in memory" means for OMSI Prefetch, why the module holds files in RAM at all, how big the budget is, which floors stop it from taking memory your system needs, which files are spent first, and how it gives memory back. Every number is taken from the code; the settings that move them are in the [settings reference](../reference/settings.md#memory).
+This page explains what "held in memory" means for Omsi Prefetch, why the module holds files in RAM at all, how big the budget is, which floors stop it from taking memory your system needs, which files are spent first, and how it gives memory back. Every number is taken from the code; the settings that move them are in the [settings reference](../reference/settings.md#memory).
 
 Related pages: [how prefetching works](how-it-works.md), [session program](session-program.md), [vehicle scopes](vehicle-scopes.md), [choosing settings by memory size](../guides/choosing-settings-by-memory.md), [diagnosing slowness](../guides/diagnosing-slowness.md).
 

@@ -1,6 +1,6 @@
 # Test coverage
 
-This page lists what the offline tests of OMSI Prefetch `1.0.0-beta.1` cover, by gate name, and what they do not. The tests are built and run by `tools\Build-Modules.ps1` (unless `-SkipTests` is given) and never start OMSI. The list below is taken from `prefetch\tests\Prefetch.Tests\Program.cs` (the session program and package gates) and `prefetch\tests\native\ShimTests.cpp` (the native component). When this page and the tests disagree, the tests win and the page is a bug.
+This page lists what the offline tests of Omsi Prefetch `1.0.0-beta.1` cover, by gate name, and what they do not. The tests are built and run by `tools\Build-Modules.ps1` (unless `-SkipTests` is given) and never start OMSI. The list below is taken from `prefetch\tests\Prefetch.Tests\Program.cs` (the session program and package gates) and `prefetch\tests\native\ShimTests.cpp` (the native component). When this page and the tests disagree, the tests win and the page is a bug.
 
 Related pages: [known limitations](../reference/known-limitations.md), [overview](../getting-started/overview.md), [native shim](../concepts/native-shim.md), [session program](../concepts/session-program.md).
 

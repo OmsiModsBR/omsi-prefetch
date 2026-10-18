@@ -1,6 +1,6 @@
 # Learned data: the learned list, the written list and the tile index
 
-For every map, OMSI Prefetch keeps three small files that make the next session of the same map better than the first one. This page explains what they contain, how they are built, how they are used, what makes them obsolete, what a second run looks like, where they live and how they are bounded. The format of each file is specified in the [files and directories reference](../reference/files-and-directories.md); how to delete them is in [clearing data](../guides/clearing-data.md).
+For every map, Omsi Prefetch keeps three small files that make the next session of the same map better than the first one. This page explains what they contain, how they are built, how they are used, what makes them obsolete, what a second run looks like, where they live and how they are bounded. The format of each file is specified in the [files and directories reference](../reference/files-and-directories.md); how to delete them is in [clearing data](../guides/clearing-data.md).
 
 Related pages: [how prefetching works](how-it-works.md), [session program](session-program.md), [memory and budget](memory-and-budget.md), [first run](../getting-started/first-run.md), [safety](safety.md).
 

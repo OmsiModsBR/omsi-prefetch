@@ -5,8 +5,23 @@
   </picture>
 </p>
 
-# omsi-prefetch
-OMSI Prefetch: an OmsiLaunch runtime module that prefetches maps and vehicles into memory and speeds up OMSI 2 loading. Module id `omsi-prefetch`.
+<div align="center">
+
+[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/OmsiModsBR/omsi-prefetch?include_prereleases&label=release&sort=semver)](https://github.com/OmsiModsBR/omsi-prefetch/releases)
+[![Last commit](https://img.shields.io/github/last-commit/OmsiModsBR/omsi-prefetch)](https://github.com/OmsiModsBR/omsi-prefetch/commits/main)
+[![Issues](https://img.shields.io/github/issues/OmsiModsBR/omsi-prefetch)](https://github.com/OmsiModsBR/omsi-prefetch/issues)
+![Platform: Windows](https://img.shields.io/badge/platform-Windows%2010%2B-0078d6)
+![Game: OMSI 2](https://img.shields.io/badge/game-OMSI%202-f78034)
+[![Requires OmsiLaunch](https://img.shields.io/badge/requires-OmsiLaunch%200.1.0--beta4%2B-ff9918)](https://github.com/OmsiModsBR/OmsiLaunch)
+![.NET 6](https://img.shields.io/badge/.NET-6-512bd4)
+![Docs: EN / PT-BR](https://img.shields.io/badge/docs-EN%20%7C%20PT--BR-00c94a)
+
+</div>
+
+# Omsi Prefetch
+
+Omsi Prefetch: an OmsiLaunch runtime module that prefetches maps and vehicles into memory and speeds up OMSI 2 loading. Module id `omsi-prefetch`.
 
 ## Results
 
@@ -31,7 +46,23 @@ Implemented, with its offline tests passing. Details, settings and the files the
 
 ## Documentation
 
-User documentation is in [docs/README.md](docs/README.md): [what it is](docs/getting-started/overview.md), [installation](docs/getting-started/installation.md), [first run](docs/getting-started/first-run.md), [how prefetching works](docs/concepts/how-it-works.md), [choosing settings by memory size](docs/guides/choosing-settings-by-memory.md), the [settings reference](docs/reference/settings.md) and the [changelog](CHANGELOG.md).
+Complete documentation, with examples, in English and Brazilian Portuguese: [English index](docs/README.md) · [Índice em português](docs/pt-BR/README.md).
+
+#### English
+
+- **Getting started:** [Overview](docs/getting-started/overview.md) · [Installation](docs/getting-started/installation.md) · [First run](docs/getting-started/first-run.md) · [Measuring the gain](docs/getting-started/measuring-the-gain.md)
+- **Concepts:** [How prefetching works](docs/concepts/how-it-works.md) · [The session program](docs/concepts/session-program.md) · [The native shim](docs/concepts/native-shim.md) · [Learned data](docs/concepts/learned-data.md) · [Memory, the budget and the floors](docs/concepts/memory-and-budget.md) · [Vehicles and scopes](docs/concepts/vehicle-scopes.md) · [Pre-open](docs/concepts/pre-open.md) · [Safety](docs/concepts/safety.md)
+- **Guides:** [Choosing settings by memory size](docs/guides/choosing-settings-by-memory.md) · [Using it with predefined session profiles](docs/guides/session-profiles.md) · [Per-session overrides on the command line](docs/guides/command-line-overrides.md) · [Turning it off](docs/guides/turning-off.md) · [Clearing the module's data](docs/guides/clearing-data.md) · [Diagnosing slowness](docs/guides/diagnosing-slowness.md) · [Coexisting with other modules and plugins](docs/guides/coexisting.md)
+- **Reference:** [Settings](docs/reference/settings.md) · [Files and directories](docs/reference/files-and-directories.md) · [Log format](docs/reference/log-format.md) · [Events and notices](docs/reference/events-and-notices.md) · [Errors and degradation](docs/reference/errors-and-degradation.md) · [Compatibility](docs/reference/compatibility.md) · [Known limitations](docs/reference/known-limitations.md) · [FAQ](docs/reference/faq.md)
+- **Status:** [Test coverage](docs/status/test-coverage.md) · [Changelog](CHANGELOG.md)
+
+#### Português (Brasil)
+
+- **Primeiros passos:** [Visão geral](docs/pt-BR/getting-started/overview.md) · [Instalação](docs/pt-BR/getting-started/installation.md) · [Primeira execução](docs/pt-BR/getting-started/first-run.md) · [Medindo o ganho](docs/pt-BR/getting-started/measuring-the-gain.md)
+- **Conceitos:** [Como o prefetch funciona](docs/pt-BR/concepts/how-it-works.md) · [O programa de sessão](docs/pt-BR/concepts/session-program.md) · [O shim nativo](docs/pt-BR/concepts/native-shim.md) · [Dados aprendidos](docs/pt-BR/concepts/learned-data.md) · [Memória, o orçamento e os pisos](docs/pt-BR/concepts/memory-and-budget.md) · [Veículos e escopos](docs/pt-BR/concepts/vehicle-scopes.md) · [Pré-abertura](docs/pt-BR/concepts/pre-open.md) · [Segurança](docs/pt-BR/concepts/safety.md)
+- **Guias:** [Escolhendo configurações pelo tamanho da memória](docs/pt-BR/guides/choosing-settings-by-memory.md) · [Usando com perfis de sessão predefinidos](docs/pt-BR/guides/session-profiles.md) · [Sobrescritas por sessão na linha de comando](docs/pt-BR/guides/command-line-overrides.md) · [Desligando](docs/pt-BR/guides/turning-off.md) · [Limpando os dados do módulo](docs/pt-BR/guides/clearing-data.md) · [Diagnosticando lentidão](docs/pt-BR/guides/diagnosing-slowness.md) · [Convivendo com outros módulos e plugins](docs/pt-BR/guides/coexisting.md)
+- **Referência:** [Configurações](docs/pt-BR/reference/settings.md) · [Arquivos e diretórios](docs/pt-BR/reference/files-and-directories.md) · [Formato do log](docs/pt-BR/reference/log-format.md) · [Eventos e avisos](docs/pt-BR/reference/events-and-notices.md) · [Erros e degradação](docs/pt-BR/reference/errors-and-degradation.md) · [Compatibilidade](docs/pt-BR/reference/compatibility.md) · [Limitações conhecidas](docs/pt-BR/reference/known-limitations.md) · [FAQ](docs/pt-BR/reference/faq.md)
+- **Status:** [Cobertura de testes](docs/pt-BR/status/test-coverage.md) · [Changelog](CHANGELOG.md)
 
 ## Building
 
@@ -45,7 +76,7 @@ The script builds the module, runs its tests and lays it out as it is installed:
 
 ## License
 
-Copyright © 2026 Leo Monteiro / Portal OmsiModsBR - https://github.com/OmsiModsBR
+Copyright © 2026 LMonteiro - github.com/lmonteirotech and OmsiModsBR Team - github.com/OmsiModsBR
 
 omsi-prefetch is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License, version 3, as published by the Free Software Foundation. See [LICENSE](LICENSE).
 

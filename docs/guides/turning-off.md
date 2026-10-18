@@ -1,6 +1,6 @@
 # Turning it off
 
-You can keep OMSI Prefetch out of one session, out of a profile, out of every session, or switch off only some of its mechanisms. This page lists each way, in order from the lightest to the most permanent, with the effect on the plan so that you can check it. Which way wins when they disagree is stated at the end.
+You can keep Omsi Prefetch out of one session, out of a profile, out of every session, or switch off only some of its mechanisms. This page lists each way, in order from the lightest to the most permanent, with the effect on the plan so that you can check it. Which way wins when they disagree is stated at the end.
 
 Related pages: [command-line overrides](command-line-overrides.md), [session profiles](session-profiles.md), [clearing data](clearing-data.md), [installation](../getting-started/installation.md).
 

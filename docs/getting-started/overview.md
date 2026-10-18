@@ -1,6 +1,6 @@
-# What OMSI Prefetch is
+# What Omsi Prefetch is
 
-OMSI Prefetch (module id `omsi-prefetch`, version `1.0.0-beta.1`) is a runtime module of OmsiLaunch that makes OMSI 2 load maps and vehicles faster. It does this in two ways that work together: before OMSI is started it reads the files the session will need into memory, and while OMSI runs it removes most of the cost of the tiny file calls the game makes. This page says what the module does for you, what you get, what it does not change, and which parts it is made of. Installation is in [installation](installation.md); the first launch is in [first run](first-run.md).
+Omsi Prefetch (module id `omsi-prefetch`, version `1.0.0-beta.1`) is a runtime module of OmsiLaunch that makes OMSI 2 load maps and vehicles faster. It does this in two ways that work together: before OMSI is started it reads the files the session will need into memory, and while OMSI runs it removes most of the cost of the tiny file calls the game makes. This page says what the module does for you, what you get, what it does not change, and which parts it is made of. Installation is in [installation](installation.md); the first launch is in [first run](first-run.md).
 
 Related pages: [installation](installation.md), [first run](first-run.md), [measuring the gain](measuring-the-gain.md), [how prefetching works](../concepts/how-it-works.md), [settings reference](../reference/settings.md), [known limitations](../reference/known-limitations.md), [FAQ](../reference/faq.md).
 

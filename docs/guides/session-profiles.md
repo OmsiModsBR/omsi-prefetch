@@ -1,6 +1,6 @@
 # Using it with predefined session profiles
 
-An OmsiLaunch session profile is a YAML package that fixes a map, an entrypoint and up to 99 presets of settings. A preset can carry the settings of OMSI Prefetch, so that each map or way of playing starts with the values that suit it: a small budget for a light session, a large one with your own vehicles for a long one, or the module switched off. This page shows how to write them, how they combine with the command line and `modules.ini`, and which mistakes OmsiLaunch rejects. The profile format itself is in the OmsiLaunch session-profile reference (`docs\reference\session-profiles.md` of OmsiLaunch).
+An OmsiLaunch session profile is a YAML package that fixes a map, an entrypoint and up to 99 presets of settings. A preset can carry the settings of Omsi Prefetch, so that each map or way of playing starts with the values that suit it: a small budget for a light session, a large one with your own vehicles for a long one, or the module switched off. This page shows how to write them, how they combine with the command line and `modules.ini`, and which mistakes OmsiLaunch rejects. The profile format itself is in the OmsiLaunch session-profile reference (`docs\reference\session-profiles.md` of OmsiLaunch).
 
 Related pages: [settings reference](../reference/settings.md), [command-line overrides](command-line-overrides.md), [turning it off](turning-off.md), [choosing settings by memory size](choosing-settings-by-memory.md).
 
@@ -33,7 +33,7 @@ Values may be written as YAML numbers, booleans or strings; OmsiLaunch converts 
 ```yaml
 schema: omsilaunch.session-profile/v1
 id: grundorf-prefetch
-name: Grundorf with OMSI Prefetch
+name: Grundorf with Omsi Prefetch
 author: You
 version: "1.0"
 compatibility:

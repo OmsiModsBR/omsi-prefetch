@@ -1,5 +1,5 @@
-OMSI Prefetch (runtime module "omsi-prefetch")
-Copyright (c) 2026 Leo Monteiro / Portal OmsiModsBR - https://github.com/OmsiModsBR
+Omsi Prefetch (runtime module "omsi-prefetch")
+Copyright (c) 2026 LMonteiro - github.com/lmonteirotech and OmsiModsBR Team - github.com/OmsiModsBR
 
 This module is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License, version 3, as published by the

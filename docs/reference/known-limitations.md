@@ -1,6 +1,6 @@
 # Known limitations
 
-This page lists, from the code, what OMSI Prefetch `1.0.0-beta.1` does not do, does only partly, or does at an accepted risk, so that you do not build expectations on behavior it does not provide. Each row says what the limitation is, why it exists and what you can do about it. Where the README of the repository and the code were compared, the code wins; the differences found are listed at the end.
+This page lists, from the code, what Omsi Prefetch `1.0.0-beta.1` does not do, does only partly, or does at an accepted risk, so that you do not build expectations on behavior it does not provide. Each row says what the limitation is, why it exists and what you can do about it. Where the README of the repository and the code were compared, the code wins; the differences found are listed at the end.
 
 Related pages: [safety](../concepts/safety.md), [errors and degradation](errors-and-degradation.md), [compatibility](compatibility.md), [FAQ](faq.md), [test coverage](../status/test-coverage.md).
 

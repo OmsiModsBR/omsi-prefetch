@@ -10,7 +10,7 @@ internal static class Strings
 
     private static string T(string pt, string en) => Portuguese ? pt : en;
 
-    public static string Product => "OMSI Prefetch";
+    public static string Product => "Omsi Prefetch";
     public static string FirstOpenTitle => T("Pré-carregamento sendo inicializado", "Preloading is being set up");
     public static string FirstOpenText(string map) => T(
         "O mapa “" + map + "” foi solicitado pela primeira vez. O módulo de pré-carregamento está lendo o mapa e trazendo para a memória o máximo que puder antes de abrir o OMSI. Nesta primeira sessão ele também aprende o que o jogo usa; as próximas aberturas serão mais rápidas.",

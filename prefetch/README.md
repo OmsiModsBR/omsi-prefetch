@@ -1,6 +1,6 @@
-# OMSI Prefetch (module `omsi-prefetch`)
+# Omsi Prefetch (module `omsi-prefetch`)
 
-Published versions © Leo Monteiro / Portal OmsiModsBR - https://github.com/OmsiModsBR, under the GNU General Public License, version 3. Not part of OmsiLaunch and not distributed with it. Built from the mechanisms of the loading optimization study as an OmsiLaunch Runtime Module (bridge protocol 2).
+Published versions © LMonteiro - github.com/lmonteirotech and OmsiModsBR Team - github.com/OmsiModsBR, under the GNU General Public License, version 3. Not part of OmsiLaunch and not distributed with it. Built from the mechanisms of the loading optimization study as an OmsiLaunch Runtime Module (bridge protocol 2).
 
 Measured results (the study of 30/09/2026): see the table in the repository's main README.
 

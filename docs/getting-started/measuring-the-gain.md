@@ -1,6 +1,6 @@
 # Measuring the gain
 
-This page shows how to compare OMSI loading with and without OMSI Prefetch on your own machine, which numbers the module gives you, and which pitfalls make a comparison wrong. The published results come from one machine and one map (n = 1) and are listed in the [overview](overview.md#what-you-get); yours will differ with the hardware, the map and the memory you give the module.
+This page shows how to compare OMSI loading with and without Omsi Prefetch on your own machine, which numbers the module gives you, and which pitfalls make a comparison wrong. The published results come from one machine and one map (n = 1) and are listed in the [overview](overview.md#what-you-get); yours will differ with the hardware, the map and the memory you give the module.
 
 Related pages: [overview](overview.md), [first run](first-run.md), [diagnosing slowness](../guides/diagnosing-slowness.md), [log format](../reference/log-format.md), [events](../reference/events-and-notices.md), [turning it off](../guides/turning-off.md).
 

@@ -1,6 +1,6 @@
 # Diagnosing slowness
 
-This guide helps you find out why a session is slow or why OMSI Prefetch did not help, using what the module itself reports: the plan, the events, the log and the monitor window. It starts with the cheapest checks. Where the log is read, the message formats are in [log format](../reference/log-format.md).
+This guide helps you find out why a session is slow or why Omsi Prefetch did not help, using what the module itself reports: the plan, the events, the log and the monitor window. It starts with the cheapest checks. Where the log is read, the message formats are in [log format](../reference/log-format.md).
 
 Related pages: [log format](../reference/log-format.md), [events](../reference/events-and-notices.md), [errors and degradation](../reference/errors-and-degradation.md), [choosing settings by memory size](choosing-settings-by-memory.md), [measuring the gain](../getting-started/measuring-the-gain.md).
 

@@ -1,6 +1,6 @@
 # Clearing the module's data
 
-OMSI Prefetch keeps what it learned about each map in `<OMSI root>\.omsilaunch\module-data\omsi-prefetch\`. You never have to clean it: it is bounded and the least recently used maps are removed by themselves. You may want to clear it to start a map from nothing, after a large change to a map, to free the space, or before removing the module. This page shows how, what is deleted, what the effect is and when to do it.
+Omsi Prefetch keeps what it learned about each map in `<OMSI root>\.omsilaunch\module-data\omsi-prefetch\`. You never have to clean it: it is bounded and the least recently used maps are removed by themselves. You may want to clear it to start a map from nothing, after a large change to a map, to free the space, or before removing the module. This page shows how, what is deleted, what the effect is and when to do it.
 
 Related pages: [learned data](../concepts/learned-data.md), [files and directories](../reference/files-and-directories.md), [turning it off](turning-off.md), [first run](../getting-started/first-run.md).
 
