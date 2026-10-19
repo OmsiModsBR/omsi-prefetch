@@ -74,6 +74,10 @@ powershell -File tools\Build-Modules.ps1
 
 The script builds the module, runs its tests and lays it out as it is installed: `artifacts\modules\omsi-prefetch\` with its `module.json`.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for building, testing, the documentation rules and the commit policy, and [SECURITY.md](SECURITY.md) to report a vulnerability.
+
 ## License
 
 Copyright © 2026 LMonteiro - github.com/lmonteirotech and OmsiModsBR Team - github.com/OmsiModsBR
