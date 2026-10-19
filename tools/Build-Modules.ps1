@@ -82,7 +82,7 @@ if (-not $SkipTests) {
     }
     Invoke-Step 'prefetch: preloader and package tests' {
         dotnet build (Join-Path $root 'prefetch\tests\Prefetch.Tests\Prefetch.Tests.csproj') -c Release -nologo -v:minimal @extra
-        if ($LASTEXITCODE -eq 0) { & (Join-Path $artifacts 'bin\Prefetch.Tests\Release\net6.0-windows\win-x64\Prefetch.Tests.exe') --package $module }
+        if ($LASTEXITCODE -eq 0) { & (Join-Path $artifacts 'bin\Prefetch.Tests\Release\net6.0-windows\win-x64\Prefetch.Tests.exe') --package $module --template (Join-Path $root 'prefetch\module.template.json') }
     }
 }
 Write-Host 'done'

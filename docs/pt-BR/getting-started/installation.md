@@ -1,6 +1,6 @@
 # Instalação
 
-<!-- l10n: source=getting-started/installation.md source-sha256=8330a34984ef746b8faf0a82a85610a4ef35b2900be5b52439ab132e337b0168 -->
+<!-- l10n: source=getting-started/installation.md source-sha256=153519c5fad1d21cee06026355e67203db4de8cd6e4622a0c3e74a2b5fd914b4 -->
 > Tradução da [página original em inglês](../../getting-started/installation.md) do Omsi Prefetch 1.0.0-beta.1. A página em inglês é a referência normativa: se as duas divergirem, valem a página em inglês e o código.
 
 Esta página lista o que o Omsi Prefetch `1.0.0-beta.1` exige, como a pasta do módulo é instalada em uma instalação do OmsiLaunch, como confirmar que o OmsiLaunch enxerga o módulo e vai carregá-lo, e como removê-lo ou atualizá-lo. Ela pressupõe que o OmsiLaunch já está instalado na raiz do OMSI, como descrito na página de instalação do OmsiLaunch. O módulo é um Runtime Module no sentido da referência de Runtime Modules do OmsiLaunch; as regras de lá (local, integridade, ativação) são as regras desta página.
@@ -12,7 +12,7 @@ Páginas relacionadas: [visão geral](overview.md), [primeira execução](first-
 
 | Requisito | Detalhe | Falha quando ausente |
 | --- | --- | --- |
-| OmsiLaunch `0.1.0-beta4` ou posterior | O módulo declara `bridge_protocol` `{ "min": 2, "max": 2 }` e as capacidades `bridge.events` e `bridge.hooks.iat`. Qualquer OmsiLaunch que ofereça o protocolo de bridge 2 consegue carregá-lo. | Não aparece como utilizável: `OL_E_MODULE_PROTOCOL_UNSUPPORTED` (ou `OL_E_MODULE_CAPABILITY_UNRESOLVED`). |
+| A primeira versão do OmsiLaunch com protocolo de bridge 3 | O módulo declara `bridge_protocol` `{ "min": 3, "max": 3 }` e as capacidades `bridge.events` e `bridge.hooks.iat`. O componente gerenciado é compilado contra o `IRuntimeModuleContext` do protocolo 3, então não roda em uma bridge que oferece só os protocolos 1 e 2 (como a `0.1.0-beta4`). | Não aparece como utilizável: `OL_E_MODULE_PROTOCOL_UNSUPPORTED` (ou `OL_E_MODULE_CAPABILITY_UNRESOLVED`). |
 | Windows 10 ou posterior, 64 bits | A mesma plataforma que o OmsiLaunch exige. O programa de sessão é x64. | O próprio OmsiLaunch recusa a plataforma. |
 | .NET 6 Desktop Runtime, **x64** | O `Prefetch.Preloader.exe` é um programa `net6.0-windows` dependente do framework (o Windows Forms é usado pelas suas duas janelas opcionais). O controlador do OmsiLaunch precisa do mesmo runtime, portanto ele já está presente quando o OmsiLaunch roda. | O OmsiLaunch inicia o programa e ele termina antes de ficar pronto: `OL_E_MODULE_LOAD_FAILED` (veja [erros e degradação](../reference/errors-and-degradation.md)). |
 | .NET 6 Runtime, **x86** | O `Prefetch.Module.dll` (`net6.0`, AnyCPU) é carregado dentro do `Omsi.exe` de 32 bits pelo plugin do OmsiLaunch, que de qualquer forma precisa do runtime x86. | O plugin do OmsiLaunch não inicia. |
@@ -53,7 +53,7 @@ O OmsiLaunch nunca copia um módulo por você, e uma sessão nunca grava em `plu
 <a id="building-the-folder-from-source"></a>
 ### Montando a pasta a partir do código-fonte
 
-O repositório compila contra um checkout do OmsiLaunch (protocolo de bridge 2 ou posterior) que precisa ser compilado antes. O `Directory.Build.props` aponta `OmsiLaunchRoot` para `..\OmsiLaunch-spec-pack\OmsiLaunch`; sobrescreva-o com `-p:OmsiLaunchRoot=...` ou com o parâmetro `-OmsiLaunchRoot` do script.
+O repositório compila contra um checkout do OmsiLaunch (a primeira versão com protocolo de bridge 3) que precisa ser compilado antes. O `Directory.Build.props` aponta `OmsiLaunchRoot` para `..\OmsiLaunch-spec-pack\OmsiLaunch`; sobrescreva-o com `-p:OmsiLaunchRoot=...` ou com o parâmetro `-OmsiLaunchRoot` do script.
 
 ```text
 powershell -File tools\Build-Modules.ps1

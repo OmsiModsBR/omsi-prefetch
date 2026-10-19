@@ -13,7 +13,7 @@
 [![Issues](https://img.shields.io/github/issues/OmsiModsBR/omsi-prefetch)](https://github.com/OmsiModsBR/omsi-prefetch/issues)
 ![Platform: Windows](https://img.shields.io/badge/platform-Windows%2010%2B-0078d6)
 ![Game: OMSI 2](https://img.shields.io/badge/game-OMSI%202-f78034)
-[![Requires OmsiLaunch](https://img.shields.io/badge/requires-OmsiLaunch%200.1.0--beta4%2B-ff9918)](https://github.com/OmsiModsBR/OmsiLaunch)
+[![Requires OmsiLaunch](https://img.shields.io/badge/requires%20OmsiLaunch-bridge%20protocol%203-ff9918)](https://github.com/OmsiModsBR/OmsiLaunch)
 ![.NET 6](https://img.shields.io/badge/.NET-6-512bd4)
 ![Docs: EN / PT-BR](https://img.shields.io/badge/docs-EN%20%7C%20PT--BR-00c94a)
 
@@ -66,7 +66,7 @@ Complete documentation, with examples, in English and Brazilian Portuguese: [Eng
 
 ## Building
 
-The module builds against an OmsiLaunch checkout (bridge protocol 2 or later): `Directory.Build.props` points `OmsiLaunchRoot` at `..\OmsiLaunch-spec-pack\OmsiLaunch` (override with `-p:OmsiLaunchRoot=...`), which must be built first.
+The module builds against an OmsiLaunch checkout (the first release with bridge protocol 3): `Directory.Build.props` points `OmsiLaunchRoot` at `..\OmsiLaunch-spec-pack\OmsiLaunch` (override with `-p:OmsiLaunchRoot=...`), which must be built first.
 
 ```text
 powershell -File tools\Build-Modules.ps1

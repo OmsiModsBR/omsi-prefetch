@@ -1,6 +1,6 @@
 # Eventos e avisos
 
-<!-- l10n: source=reference/events-and-notices.md source-sha256=e96a316529d88397ce66ed8ae7d216829ef6bb1c98ea970ac785ebc5c02bf3ff -->
+<!-- l10n: source=reference/events-and-notices.md source-sha256=146b4cd8f52033203e68f8a0043df240ad5c188509fcece574a8484232dea798 -->
 > Tradução da [página original em inglês](../../reference/events-and-notices.md) do Omsi Prefetch 1.0.0-beta.1. A página em inglês é a referência normativa: se as duas divergirem, valem a página em inglês e o código.
 
 O Omsi Prefetch informa o seu progresso ao OmsiLaunch como eventos de runtime chamados `module.omsi-prefetch.<name>`. Esta página lista todo evento que o módulo emite (e os que o OmsiLaunch emite sobre o programa de sessão dele), com as chaves dos seus dados e quando aparecem, e diz o que o módulo não emite (avisos, operações). Os eventos são lidos enquanto a sessão roda com `OmsiLaunch.exe events read` ou `events watch` e por `session status`; todos os valores são strings.
@@ -54,6 +54,7 @@ O OmsiLaunch também informa os seus próprios eventos de módulo (`module.sessi
 
 | Chave | Significado |
 | --- | --- |
+| `omsi_version` | A versão do OMSI informada pela bridge (protocolo 3), por exemplo `2.3.004`; `unknown` quando não pode ser determinada. |
 | `channel` | `session-program` quando o módulo tem um canal de sessão, `none` caso contrário. |
 | `read_ahead`, `write_behind`, `read_only_open` | As configurações efetivas como `true` ou `false`. |
 

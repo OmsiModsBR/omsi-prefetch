@@ -1,6 +1,6 @@
 # Formato do log
 
-<!-- l10n: source=reference/log-format.md source-sha256=574088045d431a21496832c82089b1358fad66c2618f08db77ae6cb79eda6ac7 -->
+<!-- l10n: source=reference/log-format.md source-sha256=3f80121385e2cc74096684a8ae492a5db497938aeb7faa3289fa7e8845c8030b -->
 > Tradução da [página original em inglês](../../reference/log-format.md) do Omsi Prefetch 1.0.0-beta.1. A página em inglês é a referência normativa: se as duas divergirem, valem a página em inglês e o código.
 
 O programa de sessão escreve um log por sessão. Ele é feito para uso, não para depuração: uma sessão escreve algumas dezenas de linhas que dizem o que foi mantido, quanto tempo levou e o que deu errado. Esta página apresenta o arquivo, os seus limites, o formato de uma linha, um exemplo e cada mensagem que o programa escreve, para que você possa ler um log (veja [diagnosticando lentidão](../guides/diagnosing-slowness.md)). As mensagens foram extraídas do código e ficam em inglês, qualquer que seja o idioma de exibição.
@@ -46,6 +46,7 @@ A hora é a hora local do relógio; não há data na linha (o nome do arquivo a 
 14:02:13.915 prepared in 2.5 s: 6900 files, 2749.5 MB of 4832.0 MB
 14:02:20.118 controller: OMSI started, pid 12044
 14:02:23.540 feed: OMSI connected
+14:02:23.541 OMSI 2.3.004
 14:08:01.004 controller: stop
 14:08:02.250 end: 6977 files held (2755.0 MB), used 3318 of them (1203.4 MB), 46 used outside memory (12.9 MB); feed 4221 lines
 14:08:02.260 exit
@@ -88,6 +89,7 @@ A hora é a hora local do relógio; não há data na linha (o nome do arquivo a 
 | --- | --- |
 | `controller: OMSI started, pid <n>` | O OmsiLaunch informou o processo do OMSI. |
 | `feed: OMSI connected` / `feed: OMSI disconnected` | O componente nativo se conectou ao pipe ou o deixou. |
+| `OMSI <version>` | A versão do OMSI informada pela bridge (protocolo 3). O componente nativo a envia quando se conecta, então aparece uma vez, logo após `feed: OMSI connected`; o evento `armed` também a traz. |
 | `feed: refused a client that is not OMSI's process` | Outro processo tentou usar o pipe. |
 | `feed: line not handled: <type>: <message>` | Um relatório de uso não pôde ser aplicado. |
 | `feed: the pipe cannot be created again: <reason>` | Depois de uma desconexão, o pipe não pôde ser recriado; o feed termina. |

@@ -1,6 +1,6 @@
 # Limitações conhecidas
 
-<!-- l10n: source=reference/known-limitations.md source-sha256=da048af1a131f516200fc2aa39c25929f3c8509b465025aa2820bb48f1c1fd37 -->
+<!-- l10n: source=reference/known-limitations.md source-sha256=f58227fad2944737fc1e2676874bfedf65d7b058ae10ec74c7d11cc48ac76b0a -->
 > Tradução da [página original em inglês](../../reference/known-limitations.md) do Omsi Prefetch 1.0.0-beta.1. A página em inglês é a referência normativa: se as duas divergirem, valem a página em inglês e o código.
 
 Esta página lista, a partir do código, o que o Omsi Prefetch `1.0.0-beta.1` não faz, faz apenas em parte ou faz com um risco aceito, para que você não crie expectativas sobre um comportamento que ele não oferece. Cada linha diz qual é a limitação, por que ela existe e o que você pode fazer a respeito. Onde o README do repositório e o código foram comparados, vale o código; as diferenças encontradas estão listadas no fim.
@@ -61,6 +61,7 @@ Páginas relacionadas: [segurança](../concepts/safety.md), [erros e degradaçã
 | --- | --- |
 | A fila de relatórios é limitada | 400.000 linhas na fila e 500.000 caminhos distintos lembrados; além disso, as linhas são descartadas e contadas e os primeiros usos posteriores não são informados. Handles além de 4096 ao mesmo tempo são atendidos nativamente. |
 | O feed desiste após dez segundos sem um programa de sessão | Os recursos nativos continuam funcionando; sem aprendizado a partir daí. |
+| A versão do OMSI chega ao log só pelo feed | O pré-carregador inicia antes do OMSI, então não conhece a versão; o componente nativo a envia quando se conecta. Se o feed nunca se conecta, o log não tem a linha `OMSI <version>` (o evento `armed` sempre traz `omsi_version`). |
 | Os hooks D3DX dependem de o `d3dx9.dll` estar carregado no início | Se não estiver, texturas e malhas carregadas pelo próprio Direct3D não são informadas como usos (`-1` no evento `hooks`). |
 | Referências que o resolvedor não encontra são puladas | O módulo segue referências como as ferramentas do estudo faziam (primeiro campo de tab de uma linha, strings entre aspas, uma pasta `model\`, pastas `texture\` acima na árvore, outra extensão de imagem). Um arquivo nomeado de uma forma que nenhuma dessas encontra não é mantido até a lista aprendida tê-lo. |
 | Pastas que são links não são listadas | Junctions e links simbólicos não são percorridos quando o módulo lista uma pasta de mapa ou de veículo. |

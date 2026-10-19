@@ -40,6 +40,7 @@ The time is the local wall-clock time; there is no date in the line (the file na
 14:02:13.915 prepared in 2.5 s: 6900 files, 2749.5 MB of 4832.0 MB
 14:02:20.118 controller: OMSI started, pid 12044
 14:02:23.540 feed: OMSI connected
+14:02:23.541 OMSI 2.3.004
 14:08:01.004 controller: stop
 14:08:02.250 end: 6977 files held (2755.0 MB), used 3318 of them (1203.4 MB), 46 used outside memory (12.9 MB); feed 4221 lines
 14:08:02.260 exit
@@ -78,6 +79,7 @@ The time is the local wall-clock time; there is no date in the line (the file na
 | --- | --- |
 | `controller: OMSI started, pid <n>` | OmsiLaunch named OMSI's process. |
 | `feed: OMSI connected` / `feed: OMSI disconnected` | The native component connected to or left the pipe. |
+| `OMSI <version>` | The OMSI version the bridge reports (bridge protocol 3). The native component sends it when it connects, so it appears once, right after `feed: OMSI connected`; the `armed` event carries it too. |
 | `feed: refused a client that is not OMSI's process` | Another process tried to use the pipe. |
 | `feed: line not handled: <type>: <message>` | A use report could not be applied. |
 | `feed: the pipe cannot be created again: <reason>` | After a disconnect the pipe could not be re-created; the feed ends. |

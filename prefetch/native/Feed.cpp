@@ -147,6 +147,18 @@ bool RequestRelease(const wchar_t* path) {
     return true;
 }
 
+void AnnounceVersion(const wchar_t* version) {
+    if (!version || !version[0] || !gUrgent || !gWake) return;
+    char utf8[200];
+    const int n = WideCharToMultiByte(CP_UTF8, 0, version, -1, utf8 + 2, static_cast<int>(sizeof(utf8)) - 4, nullptr, nullptr);
+    if (n <= 1) return;
+    utf8[0] = 'V'; utf8[1] = '\t'; utf8[n + 1] = '\n'; utf8[n + 2] = 0;
+    Acquire();
+    gUrgent->push_back(std::string(utf8, static_cast<size_t>(n) + 2));
+    Release();
+    SetEvent(gWake);
+}
+
 void Stop() {
     if (!gThread) return;
     SetEvent(gStopEvent);

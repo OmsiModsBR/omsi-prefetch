@@ -9,6 +9,7 @@ namespace OmsiLaunch.Modules.Prefetch;
 //   U<TAB><path>  first use of a file      T<TAB><path>  a tile_X_Y.map opened
 //   W<TAB><path>  the game wrote to a file X<TAB><path>  OMSI cannot replace a
 //                                                        held file: release it
+//   V<TAB><text>  the OMSI version (bridge protocol 3), written to the log only
 // The pipe is restricted to the current user, and a client that is not OMSI's
 // process is refused. Paths are data: bounded, resolved inside the
 // installation, never opened by anything but the holding code.
@@ -98,11 +99,18 @@ internal sealed class Feed : IDisposable
     {
         if (line.Count < 3 || line.Count >= MaxLine || line[1] != (byte)'\t') return;
         var kind = (char)line[0];
-        if (kind is not ('U' or 'T' or 'W' or 'X')) return;
+        if (kind is not ('U' or 'T' or 'W' or 'X' or 'V')) return;
         string path;
         try { path = new UTF8Encoding(false, true).GetString(line.ToArray(), 2, line.Count - 2); }
         catch (DecoderFallbackException) { return; }
         if (path.Any(char.IsControl)) return;
+        // V: the OMSI version the bridge reports. It only goes to the log (a
+        // short text of plain characters) and is not a use report.
+        if (kind == 'V')
+        {
+            if (path.Length <= 64 && path.All(c => (c < 128 && char.IsLetterOrDigit(c)) || c is '.' or '-' or '_' or ' ')) Log.Write("OMSI " + path);
+            return;
+        }
         Interlocked.Increment(ref Lines);
         // OMSI is waiting on an X: answer it now, on this thread.
         if (kind == 'X') { Handle(kind, path); return; }

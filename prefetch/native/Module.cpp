@@ -70,7 +70,11 @@ extern "C" __declspec(dllexport) int __cdecl omsilaunch_module_native_v1_start(c
     if (chain.meshXA) mesh = Request("iat:d3dx9.dll!D3DXLoadMeshFromXA", reinterpret_cast<void*>(&fileshim::HookMeshXA), reinterpret_cast<void**>(&chain.meshXA));
 
     const std::wstring channel = Value("session_channel");
-    if (!channel.empty()) feed::Start(channel.c_str());
+    if (!channel.empty()) {
+        feed::Start(channel.c_str());
+        // Bridge protocol 3: the OMSI version, for the preloader's log.
+        feed::AnnounceVersion(Value("omsi_version").c_str());
+    }
 
     char json[512];
     sprintf_s(json, "{\"create\":\"%d\",\"read\":\"%d\",\"close\":\"%d\",\"write\":\"%d\",\"seek\":\"%d\",\"size\":\"%d\",\"truncate\":\"%d\",\"tex_ex_w\":\"%d\",\"tex_ex_a\":\"%d\",\"tex_w\":\"%d\",\"mesh\":\"%d\",\"feed\":\"%d\"}",

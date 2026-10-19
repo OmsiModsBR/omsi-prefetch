@@ -1,6 +1,6 @@
 # Compatibilidade
 
-<!-- l10n: source=reference/compatibility.md source-sha256=8030c8d581f8cd70c8072dfdad6b79fef036396752ae2a6b84246d6ca7a126f7 -->
+<!-- l10n: source=reference/compatibility.md source-sha256=3dabf0bdce847229d3a2009829f8dc96576cea3780d0b0fe345305f4b79c1392 -->
 > Tradução da [página original em inglês](../../reference/compatibility.md) do Omsi Prefetch 1.0.0-beta.1. A página em inglês é a referência normativa: se as duas divergirem, valem a página em inglês e o código.
 
 Esta página diz com o que o Omsi Prefetch `1.0.0-beta.1` funciona: versões do OmsiLaunch, Windows, os runtimes .NET, builds do OMSI 2, mapas e veículos, outros plugins e módulos, e os idiomas das suas janelas. Fontes: `prefetch\module.template.json`, os arquivos de projeto em `prefetch\` e o código nativo e do programa de sessão.
@@ -12,7 +12,7 @@ Páginas relacionadas: [instalação](../getting-started/installation.md), [erro
 
 | Assunto | Compatibilidade |
 | --- | --- |
-| OmsiLaunch | `0.1.0-beta4` ou posterior; qualquer build que ofereça o protocolo de bridge 2. O manifesto declara `bridge_protocol` `{ "min": 2, "max": 2 }`, ativação `default`, capacidades obrigatórias `bridge.events` e `bridge.hooks.iat`, política de falha `degrade`. |
+| OmsiLaunch | A primeira versão com protocolo de bridge 3; um OmsiLaunch que oferece só os protocolos 1 e 2 (como a `0.1.0-beta4`) não carrega o módulo. O manifesto declara `bridge_protocol` `{ "min": 3, "max": 3 }`, ativação `default`, capacidades obrigatórias `bridge.events` e `bridge.hooks.iat`, política de falha `degrade`. |
 | Windows | Windows 10 ou posterior, 64 bits (a plataforma que o OmsiLaunch suporta). O programa de sessão é x64. |
 | .NET | x64: .NET 6 Desktop Runtime (o programa de sessão é um arquivo único `net6.0-windows` dependente do framework; o controlador do OmsiLaunch precisa do mesmo runtime). x86: .NET 6 Runtime para o componente gerenciado dentro do OMSI (`net6.0`, AnyCPU; o plugin do OmsiLaunch já precisa dele). |
 | Nativo | `prefetch-native.dll` é uma DLL C++ de 32 bits (x86) compilada com o cabeçalho de módulo nativo do OmsiLaunch (`omsilaunch_module_native_v1.h`), carregada no OMSI pela bridge. |

@@ -47,6 +47,7 @@ OmsiLaunch also reports its own module events (`module.session-failure`, `module
 
 | Key | Meaning |
 | --- | --- |
+| `omsi_version` | The OMSI version the bridge reports (bridge protocol 3), for example `2.3.004`; `unknown` when it cannot be determined. |
 | `channel` | `session-program` when the module has a session channel, `none` otherwise. |
 | `read_ahead`, `write_behind`, `read_only_open` | The effective settings as `true` or `false`. |
 

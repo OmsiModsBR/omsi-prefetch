@@ -16,7 +16,7 @@ Planning is different for a module that joins by itself (activation `default`): 
 | --- | --- | --- | --- |
 | A file of the module folder was changed, is missing or is reached through a link | `OL_E_MODULE_INTEGRITY` (as `OL_W_MODULE_NOT_LOADED` for the default activation) | The module is not loaded. | Reinstall the module folder ([installation](../getting-started/installation.md)). |
 | `module.json` is missing or invalid, or the folder is not named `omsi-prefetch` | `OL_E_MODULE_MANIFEST_INVALID` | Not loaded. | Reinstall. |
-| OmsiLaunch does not serve bridge protocol 2 | `OL_E_MODULE_PROTOCOL_UNSUPPORTED` | Not loaded. | Use an OmsiLaunch that serves protocol 2 (`0.1.0-beta4` or later). |
+| OmsiLaunch does not serve bridge protocol 3 | `OL_E_MODULE_PROTOCOL_UNSUPPORTED` | Not loaded. | Use the first OmsiLaunch release with bridge protocol 3. |
 | The OMSI build does not resolve a capability the module needs (`bridge.hooks.iat`) | `OL_E_MODULE_CAPABILITY_UNRESOLVED` | Not loaded. | See the OmsiLaunch capabilities and `profiles` reference. |
 | The plugin `OmsiLoadingPoC.dll` is switched on in `plugins\*.opl` | `OL_E_MODULE_CONFLICT` (as `OL_W_MODULE_NOT_LOADED` for the default activation) | Not loaded. | Switch that plugin off ([coexisting](../guides/coexisting.md)). |
 | A setting or a flag value is invalid, or a key does not exist | `OL_E_MODULE_SETTING_INVALID` | The plan is not runnable. | Correct the value; `/list:RuntimeModules` shows the settings. |
@@ -41,7 +41,7 @@ Planning is different for a module that joins by itself (activation `default`): 
 | Situation | Where you see it | What happens |
 | --- | --- | --- |
 | `CreateFileW`, `ReadFile` or `CloseHandle` cannot be hooked | The `hooks` event (a value other than `0`); `OL_E_MODULE_PHASE_FAILED` ("the native component's start returned 2") | The phase fails and the bridge removes whatever was installed; the module is released inside OMSI and the session continues. |
-| The bridge is protocol 1, or its table has no `get_value` | Start returns `1` | The component refuses to start. Not reachable with a bridge that serves protocol 2. |
+| The bridge is protocol 1, or its table has no `get_value` | Start returns `1` | The component refuses to start. Not reachable with a bridge that serves protocol 3. |
 | Another plugin already changed the same import | The `hooks` event shows `4` for that hook | That hook is refused, never overwritten. For one of the three required hooks, see above; for the others the dependent features stay off. |
 | A position hook (`SetFilePointer`, `GetFileSize`, `SetEndOfFile`) or `WriteFile` is refused | The `hooks` event | Read-ahead, write-behind and read-only open all stay off; the use reports still work. |
 | A D3DX function is not hooked | The `hooks` event shows `-1` or a code | Textures and meshes loaded by Direct3D itself are not reported as uses; nothing else changes. |

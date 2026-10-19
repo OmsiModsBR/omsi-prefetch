@@ -8,7 +8,7 @@ Related pages: [overview](overview.md), [first run](first-run.md), [turning it o
 
 | Requirement | Detail | Failure when missing |
 | --- | --- | --- |
-| OmsiLaunch `0.1.0-beta4` or later | The module declares `bridge_protocol` `{ "min": 2, "max": 2 }` and the capabilities `bridge.events` and `bridge.hooks.iat`. Any OmsiLaunch that serves bridge protocol 2 can load it. | Not listed as usable: `OL_E_MODULE_PROTOCOL_UNSUPPORTED` (or `OL_E_MODULE_CAPABILITY_UNRESOLVED`). |
+| The first OmsiLaunch release with bridge protocol 3 | The module declares `bridge_protocol` `{ "min": 3, "max": 3 }` and the capabilities `bridge.events` and `bridge.hooks.iat`. Its managed component is built against the protocol 3 `IRuntimeModuleContext`, so it cannot run on a bridge that serves only protocols 1 and 2 (such as `0.1.0-beta4`). | Not listed as usable: `OL_E_MODULE_PROTOCOL_UNSUPPORTED` (or `OL_E_MODULE_CAPABILITY_UNRESOLVED`). |
 | Windows 10 or later, 64-bit | The same platform OmsiLaunch requires. The session program is x64. | OmsiLaunch itself refuses the platform. |
 | .NET 6 Desktop Runtime, **x64** | `Prefetch.Preloader.exe` is a framework-dependent `net6.0-windows` program (Windows Forms is used by its two optional windows). OmsiLaunch's controller needs the same runtime, so it is already present when OmsiLaunch runs. | OmsiLaunch starts the program and it exits before it is ready: `OL_E_MODULE_LOAD_FAILED` (see [errors and degradation](../reference/errors-and-degradation.md)). |
 | .NET 6 Runtime, **x86** | `Prefetch.Module.dll` (`net6.0`, AnyCPU) is loaded inside the 32-bit `Omsi.exe` by the OmsiLaunch plugin, which needs the x86 runtime anyway. | The OmsiLaunch plugin does not start. |
@@ -46,7 +46,7 @@ OmsiLaunch never copies a module for you, and a session never writes to `plugins
 
 ### Building the folder from source
 
-The repository builds against an OmsiLaunch checkout (bridge protocol 2 or later) that must be built first. `Directory.Build.props` points `OmsiLaunchRoot` at `..\OmsiLaunch-spec-pack\OmsiLaunch`; override it with `-p:OmsiLaunchRoot=...` or the `-OmsiLaunchRoot` parameter of the script.
+The repository builds against an OmsiLaunch checkout (the first release with bridge protocol 3) that must be built first. `Directory.Build.props` points `OmsiLaunchRoot` at `..\OmsiLaunch-spec-pack\OmsiLaunch`; override it with `-p:OmsiLaunchRoot=...` or the `-OmsiLaunchRoot` parameter of the script.
 
 ```text
 powershell -File tools\Build-Modules.ps1

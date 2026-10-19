@@ -2,12 +2,13 @@ using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Text;
 using System.Text.Json;
+using OmsiLaunch.Api;
 using OmsiLaunch.Process;
 using OmsiLaunch.Runtime.Modules;
 
 namespace OmsiLaunch.Modules.Prefetch.Tests;
 
-// Prefetch.Tests [--package <artifacts\modules\omsi-prefetch>]
+// Prefetch.Tests [--package <artifacts\modules\omsi-prefetch> [--template <prefetch\module.template.json>]]
 // Unit gates on a synthetic installation, then the session program end to
 // end (the packaged one when --package is given).
 internal static class Program
@@ -17,7 +18,8 @@ internal static class Program
     private static int Main(string[] args)
     {
         if (args.Length == 3 && args[0] == "--survey") return Survey(args[1], args[2]);
-        var package = args.Length == 2 && args[0] == "--package" ? Path.GetFullPath(args[1]) : null;
+        var package = args.Length >= 2 && args[0] == "--package" ? Path.GetFullPath(args[1]) : null;
+        var template = args.Length == 4 && args[2] == "--template" ? Path.GetFullPath(args[3]) : null;
         Gate("text.encodings-and-tokens", TextGate);
         Gate("text.o3d-texture-names", O3dGate);
         Gate("settings.budget", BudgetGate);
@@ -29,7 +31,10 @@ internal static class Program
         Gate("holdings.hold-release", HoldingsGate);
         Gate("holdings.game-streamed-files-never-held", StreamedFilesGate);
         Gate("feed.release-is-never-queued", FeedReleaseGate);
+        Gate("feed.omsi-version-is-log-only", FeedVersionGate);
+        if (template is not null) Gate("manifest.protocol-3", () => TemplateGate(template));
         if (package is not null) Gate("package.manifest", () => PackageGate(package));
+        if (package is not null) Gate("package.omsilaunch-pack-verify", () => PackerGate(package));
         var exe = package is not null ? Path.Combine(package, "Prefetch.Preloader.exe") : Path.Combine(AppContext.BaseDirectory, "Prefetch.Preloader.exe");
         Gate("session.end-to-end", () => EndToEnd(exe));
         Console.WriteLine(failures == 0 ? "all gates passed" : failures + " gate(s) failed");
@@ -362,12 +367,87 @@ internal static class Program
         }
     }
 
+    // The V line (the OMSI version, bridge protocol 3) only reaches the log: it is
+    // not a use report, is not counted and is not handed to the session; a text
+    // that is not plain is dropped.
+    private static void FeedVersionGate()
+    {
+        var logs = Path.Combine(Path.GetTempPath(), "prefetch-version-" + Guid.NewGuid().ToString("N"));
+        var channel = @"\\.\pipe\OmsiLaunch.Module.test" + Guid.NewGuid().ToString("N");
+        var handed = new ConcurrentQueue<char>();
+        try
+        {
+            Log.Open(logs);
+            using (var feed = new Feed(channel, () => Environment.ProcessId, (kind, path) => handed.Enqueue(kind)))
+            {
+                feed.Start();
+                using var client = new NamedPipeClientStream(".", channel[9..], PipeDirection.Out);
+                client.Connect(5000);
+                var bytes = Encoding.UTF8.GetBytes("V\t2.3.004\nV\t..\\evil\\path\nV\t" + new string('9', 100) + "\nU\tmaps\\Test\\f.txt\n");
+                client.Write(bytes, 0, bytes.Length);
+                client.Flush();
+                var until = DateTime.UtcNow + TimeSpan.FromSeconds(3);
+                while (handed.IsEmpty && DateTime.UtcNow < until) Thread.Sleep(5);
+                Thread.Sleep(100);
+                Check(feed.Lines == 1 && handed.Count == 1 && handed.TryPeek(out var only) && only == 'U', "only the U line is a use report (" + feed.Lines + " counted)");
+            }
+            Log.Close();
+            var text = File.ReadAllText(Directory.GetFiles(logs, "preloader-*.log").Single());
+            Check(text.Contains("OMSI 2.3.004", StringComparison.Ordinal), "the version is in the log");
+            Check(!text.Contains("evil", StringComparison.Ordinal) && !text.Contains("9999999999", StringComparison.Ordinal), "a version that is not plain text is dropped");
+        }
+        finally
+        {
+            Log.Close();
+            try { Directory.Delete(logs, true); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+        }
+    }
+
+    // The template, read by OmsiLaunch's own parser (pins filled the way the build does).
+    private static void TemplateGate(string template)
+    {
+        var text = File.ReadAllText(template).Replace("\"sha256\": \"\"", "\"sha256\": \"" + new string('0', 64) + "\"", StringComparison.Ordinal);
+        var manifest = ModuleManifestParser.Parse(Encoding.UTF8.GetBytes(text));
+        Check(manifest.Id == "omsi-prefetch" && manifest.Version == "1.0.0-beta.1" && manifest.Name == "Omsi Prefetch", "identity and version");
+        Check(manifest.BridgeProtocolMin == 3 && manifest.BridgeProtocolMax == 3, "bridge protocol 3 only: the managed component is built against the protocol 3 context");
+        Check(RuntimeModuleProtocol.IsCompatible(manifest.BridgeProtocolMin, manifest.BridgeProtocolMax), "this OmsiLaunch serves the module's protocol");
+        Check(manifest.RequiredCapabilities.SequenceEqual(new[] { "bridge.events", "bridge.hooks.iat" }) && manifest.OptionalCapabilities.Count == 0, "capabilities: the events and the import hooks, nothing else");
+        Check(manifest.Components.All(c => c.Sha256 is not null), "every component is pinned (the build pins them although protocol 3 does not require it)");
+        Check(manifest.Activation == ModuleActivation.Default && manifest.EffectiveSettings.Count == 29, "activation and settings unchanged");
+    }
+
+    // The assembled package through OmsiLaunch's packer: every pin holds, so
+    // /verify-module is clean and a pack would write nothing.
+    private static void PackerGate(string package)
+    {
+        var verified = ModulePacker.Verify(package);
+        Check(verified.ModuleId == "omsi-prefetch" && verified.Files.Count == 3, "verify names the module and its three components");
+        Check(verified.Intact && verified.UpToDate && verified.Files.All(f => f.Previous is not null), "every pin matches its file");
+        // The catalog expects the directory to carry the module's id.
+        var scratch = Path.Combine(Path.GetTempPath(), "prefetch-pack-" + Guid.NewGuid().ToString("N"));
+        var copy = Path.Combine(scratch, "omsi-prefetch");
+        try
+        {
+            Directory.CreateDirectory(copy);
+            foreach (var file in Directory.GetFiles(package)) File.Copy(file, Path.Combine(copy, Path.GetFileName(file)));
+            var before = File.ReadAllBytes(Path.Combine(copy, "module.json"));
+            var packed = ModulePacker.Pack(copy);
+            Check(!packed.Written && File.ReadAllBytes(Path.Combine(copy, "module.json")).SequenceEqual(before), "packing the assembled module writes nothing");
+            File.AppendAllText(Path.Combine(copy, "Prefetch.Module.dll"), "x");
+            var broken = ModulePacker.Verify(copy);
+            Check(!broken.Intact && broken.Files.Single(f => f.Mismatch).Path == "Prefetch.Module.dll", "a changed component is reported as a mismatch");
+            var inspected = ModuleCatalog.Inspect(copy);
+            Check(inspected.Code == PublicErrorCodes.MODULE_INTEGRITY, "and the catalog refuses it (" + inspected.Code + ")");
+        }
+        finally { try { Directory.Delete(scratch, true); } catch (IOException) { } catch (UnauthorizedAccessException) { } }
+    }
+
     private static void PackageGate(string package)
     {
         var module = ModuleCatalog.Inspect(package);
         Check(module.Code is null, "the package is a valid module: " + module.Code + " " + module.Message);
         var manifest = module.Manifest!;
-        Check(manifest.Id == "omsi-prefetch" && manifest.Activation == ModuleActivation.Default && manifest.BridgeProtocolMin == 2 && manifest.BridgeProtocolMax == 2, "identity and activation");
+        Check(manifest.Id == "omsi-prefetch" && manifest.Activation == ModuleActivation.Default && manifest.BridgeProtocolMin == 3 && manifest.BridgeProtocolMax == 3, "identity and activation");
         Check(manifest.HostComponent?.Path == "Prefetch.Preloader.exe" && manifest.Components.Any(c => c.Kind == ModuleComponentKind.Native), "components");
         Check(manifest.EffectiveSettings.Count == 29 && manifest.EffectiveSettings.Single(s => s.Key == "ram_budget_mb").Flag == "prefetch-ram" && manifest.EffectiveSettings.Single(s => s.Key == "monitor").Flag == "prefetch-monitor" && !manifest.EffectiveSettings.Single(s => s.Key == "monitor").Default.Equals("true") && manifest.EffectiveSettings.Single(s => s.Key == "debug_log").Default == "false", "settings: every ini setting is reachable, the monitor and the debug log are off by default");
         Check(manifest.EffectiveConflictingPlugins.SequenceEqual(new[] { "OmsiLoadingPoC.dll" }), "conflicts");

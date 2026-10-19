@@ -1,6 +1,6 @@
 # Erros e degradação
 
-<!-- l10n: source=reference/errors-and-degradation.md source-sha256=6496b65ad65f8d10f5b1ae8ae290fec42f015ad46c27dd4b580f195bad33cf97 -->
+<!-- l10n: source=reference/errors-and-degradation.md source-sha256=7a4e73bc32081310ec30e756f1a1483577f473c113c09b1ae35d9da7d79db880 -->
 > Tradução da [página original em inglês](../../reference/errors-and-degradation.md) do Omsi Prefetch 1.0.0-beta.1. A página em inglês é a referência normativa: se as duas divergirem, valem a página em inglês e o código.
 
 O Omsi Prefetch é construído para falhar pequeno: a política de falha no seu manifesto é `degrade`, e cada uma das suas partes continua funcionando quando outra não consegue. Esta página lista o que pode dar errado, qual código do OmsiLaunch ou mensagem do módulo mostra isso, o que o módulo faz e o que você pode fazer. Os códigos são os da referência de erros do OmsiLaunch; esta página diz o que eles significam para este módulo.
@@ -21,7 +21,7 @@ O planejamento é diferente para um módulo que entra sozinho (ativação `defau
 | --- | --- | --- | --- |
 | Um arquivo da pasta do módulo foi alterado, está ausente ou é alcançado por um link | `OL_E_MODULE_INTEGRITY` (como `OL_W_MODULE_NOT_LOADED` para a ativação padrão) | O módulo não é carregado. | Reinstale a pasta do módulo ([instalação](../getting-started/installation.md)). |
 | O `module.json` está ausente ou inválido, ou a pasta não se chama `omsi-prefetch` | `OL_E_MODULE_MANIFEST_INVALID` | Não é carregado. | Reinstale. |
-| O OmsiLaunch não oferece o protocolo de bridge 2 | `OL_E_MODULE_PROTOCOL_UNSUPPORTED` | Não é carregado. | Use um OmsiLaunch que ofereça o protocolo 2 (`0.1.0-beta4` ou posterior). |
+| O OmsiLaunch não oferece o protocolo de bridge 3 | `OL_E_MODULE_PROTOCOL_UNSUPPORTED` | Não é carregado. | Use a primeira versão do OmsiLaunch com protocolo de bridge 3. |
 | O build do OMSI não resolve uma capacidade de que o módulo precisa (`bridge.hooks.iat`) | `OL_E_MODULE_CAPABILITY_UNRESOLVED` | Não é carregado. | Veja a referência de capacidades e `profiles` do OmsiLaunch. |
 | O plugin `OmsiLoadingPoC.dll` está ligado em `plugins\*.opl` | `OL_E_MODULE_CONFLICT` (como `OL_W_MODULE_NOT_LOADED` para a ativação padrão) | Não é carregado. | Desligue esse plugin ([convivência](../guides/coexisting.md)). |
 | Uma configuração ou um valor de flag é inválido, ou uma chave não existe | `OL_E_MODULE_SETTING_INVALID` | O plano não é executável. | Corrija o valor; `/list:RuntimeModules` mostra as configurações. |
@@ -48,7 +48,7 @@ O planejamento é diferente para um módulo que entra sozinho (ativação `defau
 | Situação | Onde você vê | O que acontece |
 | --- | --- | --- |
 | `CreateFileW`, `ReadFile` ou `CloseHandle` não podem receber hook | O evento `hooks` (um valor diferente de `0`); `OL_E_MODULE_PHASE_FAILED` ("the native component's start returned 2") | A fase falha e a bridge remove o que tiver sido instalado; o módulo é liberado dentro do OMSI e a sessão continua. |
-| A bridge é do protocolo 1, ou a sua tabela não tem `get_value` | A inicialização retorna `1` | O componente se recusa a iniciar. Não ocorre com uma bridge que oferece o protocolo 2. |
+| A bridge é do protocolo 1, ou a sua tabela não tem `get_value` | A inicialização retorna `1` | O componente se recusa a iniciar. Não ocorre com uma bridge que oferece o protocolo 3. |
 | Outro plugin já alterou a mesma importação | O evento `hooks` mostra `4` para esse hook | Esse hook é recusado, nunca sobrescrito. Para um dos três hooks obrigatórios, veja acima; para os demais, os recursos dependentes ficam desligados. |
 | Um hook de posição (`SetFilePointer`, `GetFileSize`, `SetEndOfFile`) ou `WriteFile` é recusado | O evento `hooks` | Read-ahead, write-behind e abertura somente leitura ficam todos desligados; os relatórios de uso continuam funcionando. |
 | Uma função D3DX não recebe hook | O evento `hooks` mostra `-1` ou um código | Texturas e malhas carregadas pelo próprio Direct3D não são informadas como usos; nada mais muda. |

@@ -253,6 +253,7 @@ void Bridge(bool features, bool channel) {
     gFake.values["setting.read_only_open"] = on;
     gFake.values["setting.read_only_folders"] = "vehicles\\";
     if (channel) gFake.values["session_channel"] = Utf8(StartServer());
+    gFake.values["omsi_version"] = "2.3.004";
 }
 
 // ---- checks
@@ -476,6 +477,7 @@ int Main(const wchar_t* dll) {
     printf("use reports\n");
     CHECK(WaitLines({ { "U\t" + Utf8(big) + "\n", 1 }, { "W\t" + Utf8(big) + "\n", 1 }, { "U\t" + Utf8(rdy) + "\n", 1 }, { "W\t" + Utf8(rdy) + "\n", 1 },
                       { "U\t" + Utf8(cfg) + "\n", 1 }, { "W\t" + Utf8(cfg) + "\n", 1 }, { "T\t" + Utf8(tile) + "\n", 2 }, { "U\t" + Utf8(named) + "\n", 1 } }, 5000));
+    CHECK(CountLines("V\t2.3.004\n") == 1);                  // the OMSI version of bridge protocol 3, once
     CHECK(CountLines("U\t" + Utf8(big) + "\n") == 1);         // first use only
     CHECK(CountLines("W\t" + Utf8(cfg) + "\n") == 1);         // first write only
     CHECK(CountLines("U\t" + Utf8(tile) + "\n") == 0);        // tile opens are T lines

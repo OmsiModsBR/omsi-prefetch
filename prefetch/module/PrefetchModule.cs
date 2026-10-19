@@ -16,6 +16,7 @@ public sealed class PrefetchModule : IRuntimeModule
         this.context = context;
         context.Emit("armed", new Dictionary<string, string>
         {
+            ["omsi_version"] = context.OmsiVersion,
             ["channel"] = context.SessionChannelName is null ? "none" : "session-program",
             ["read_ahead"] = Setting("read_ahead"),
             ["write_behind"] = Setting("write_behind"),

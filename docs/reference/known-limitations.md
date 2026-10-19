@@ -53,6 +53,7 @@ Related pages: [safety](../concepts/safety.md), [errors and degradation](errors-
 | --- | --- |
 | The report queue is bounded | 400,000 queued lines and 500,000 distinct paths remembered; beyond that, lines are dropped and counted and later first uses are not reported. Handles beyond 4096 at once are served natively. |
 | Feed gives up after ten seconds without a session program | The native features keep working; no learning from then on. |
+| The OMSI version reaches the log only through the feed | The preloader starts before OMSI, so it cannot know the version; the native component sends it when it connects. If the feed never connects, the log has no `OMSI <version>` line (the `armed` event always carries `omsi_version`). |
 | D3DX hooks depend on `d3dx9.dll` being loaded at start | If it is not, textures and meshes loaded by Direct3D itself are not reported as uses (`-1` in the `hooks` event). |
 | References the resolver cannot find are skipped | The module follows references the way the study's tools did (first tab field of a line, quoted strings, a `model\` folder, `texture\` folders up the tree, another image extension). A file named in a way that none of those finds is not held until the learned list has it. |
 | Folders that are links are not listed | Junctions and symbolic links are not entered when the module lists a map or vehicle folder. |

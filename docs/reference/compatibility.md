@@ -8,7 +8,7 @@ Related pages: [installation](../getting-started/installation.md), [errors and d
 
 | Subject | Compatibility |
 | --- | --- |
-| OmsiLaunch | `0.1.0-beta4` or later; any build that serves bridge protocol 2. The manifest declares `bridge_protocol` `{ "min": 2, "max": 2 }`, activation `default`, required capabilities `bridge.events` and `bridge.hooks.iat`, failure policy `degrade`. |
+| OmsiLaunch | The first release with bridge protocol 3; an OmsiLaunch that serves only protocols 1 and 2 (such as `0.1.0-beta4`) does not load the module. The manifest declares `bridge_protocol` `{ "min": 3, "max": 3 }`, activation `default`, required capabilities `bridge.events` and `bridge.hooks.iat`, failure policy `degrade`. |
 | Windows | Windows 10 or later, 64-bit (the platform OmsiLaunch supports). The session program is x64. |
 | .NET | x64: .NET 6 Desktop Runtime (the session program is a framework-dependent `net6.0-windows` single file; OmsiLaunch's controller needs the same runtime). x86: .NET 6 Runtime for the managed component inside OMSI (`net6.0`, AnyCPU; the OmsiLaunch plugin already needs it). |
 | Native | `prefetch-native.dll` is a 32-bit (x86) C++ DLL built with the OmsiLaunch native module header (`omsilaunch_module_native_v1.h`), loaded into OMSI by the bridge. |
